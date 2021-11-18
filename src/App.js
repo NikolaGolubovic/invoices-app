@@ -1,23 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useContext } from "react";
+import "./App.css";
+
+import Logo from "./components/svg/Logo";
+import Sun from "./components/svg/Sun";
+
+import ACTIONS from "./reducer/ACTIONS";
+import { InvoiceContext } from "./context/invoiceContext";
+
+import { keepTheme } from "./utils/themes";
+
+import Toggle from "./components/Toggle";
+import Invoices from "./components/Invoices";
 
 function App() {
+  const invoiceContext = useContext(InvoiceContext);
+
+  useEffect(() => {
+    keepTheme();
+  }, []);
+  // const { dispatch } = invoiceContext;
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <nav>
+        <Logo />
+        <Toggle />
+      </nav>
+      <Invoices />
     </div>
   );
 }
