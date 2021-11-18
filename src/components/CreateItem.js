@@ -1,13 +1,6 @@
 import React, { useRef, useEffect } from "react";
 
-const CreateItem = ({
-  item,
-  setItemsList,
-  itemsList,
-  itemIndex,
-  setRefsArr,
-  refsArr,
-}) => {
+const CreateItem = ({ item, setRefsArr, refsArr }) => {
   const itemNameRef = useRef();
   const qtyRef = useRef();
   const priceRef = useRef();
