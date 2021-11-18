@@ -1,10 +1,11 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Calendar from "react-calendar";
 import CreateItem from "./CreateItem";
 
 const Create = () => {
   const [value, onChange] = useState(new Date());
   const [itemsList, setItemsList] = useState([]);
+  const [refsArr, setRefsArr] = useState([]);
   const fromAddress = useRef();
   const fromCity = useRef();
   const fromPC = useRef();
@@ -17,21 +18,23 @@ const Create = () => {
   const toCountry = useRef();
   const desc = useRef();
 
-  const arr = [
-    fromAddress,
-    fromCity,
-    fromPC,
-    fromCountry,
-    toCName,
-    toAddress,
-    toCity,
-    toPC,
-    toCountry,
-    desc,
-  ];
+  useEffect(() => {
+    setRefsArr([
+      fromAddress,
+      fromCity,
+      fromPC,
+      fromCountry,
+      toCName,
+      toAddress,
+      toCity,
+      toPC,
+      toCountry,
+      desc,
+    ]);
+  }, []);
+
   function checkInputs() {
-    console.log("date", value);
-    arr.forEach((elem) => {
+    refsArr.forEach((elem) => {
       if (elem.current.value.length === 0) {
         elem.current.classList.add("invalid");
       } else {
@@ -129,6 +132,8 @@ const Create = () => {
                 itemIndex={itemIndex}
                 itemsList={itemsList}
                 setItemsList={setItemsList}
+                setRefsArr={setRefsArr}
+                refsArr={refsArr}
                 key={itemIndex}
               />
             );
@@ -136,16 +141,7 @@ const Create = () => {
         </ul>
         <button
           onClick={() => {
-            setItemsList([
-              ...itemsList,
-              {
-                key: Math.ceil(Math.random() * 1000000),
-                itemRef: null,
-                qty: "",
-                price: "",
-                total: 0,
-              },
-            ]);
+            setItemsList([...itemsList, {}]);
           }}
         >
           + Add New Item

@@ -1,44 +1,33 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 
-const CreateItem = ({ item, setItemsList, itemsList, itemIndex }) => {
-  const hello = useRef();
+const CreateItem = ({
+  item,
+  setItemsList,
+  itemsList,
+  itemIndex,
+  setRefsArr,
+  refsArr,
+}) => {
+  const itemNameRef = useRef();
+  const qtyRef = useRef();
+  const priceRef = useRef();
+  useEffect(() => {
+    setRefsArr([...refsArr, itemNameRef, qtyRef, priceRef]);
+  }, []);
+
   return (
     <li className="create-item">
       <label>
         <p>Item Name</p>
-        <input
-          type="text"
-          value={item.itemName}
-          onChange={(e) =>
-            setItemsList(
-              itemsList.map((elem, elemIndex) => {
-                return elemIndex === itemIndex
-                  ? { ...elem, itemName: e.target.value }
-                  : elem;
-              })
-            )
-          }
-        />
+        <input type="text" ref={itemNameRef} />
       </label>
       <label>
         <p>Qty.</p>
-        <input type="text" />
+        <input type="text" ref={qtyRef} />
       </label>
       <label>
         <p>Price</p>
-        <input
-          type="text"
-          value={item.price}
-          onChange={(e) =>
-            setItemsList(
-              itemsList.map((elem, elemIndex) => {
-                return elemIndex === itemIndex
-                  ? { ...elem, price: e.target.value }
-                  : elem;
-              })
-            )
-          }
-        />
+        <input type="text" ref={priceRef} />
       </label>
       <div className="total">
         Total
