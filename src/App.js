@@ -21,7 +21,7 @@ function App() {
   // const { dispatch } = invoiceContext;
 
   return (
-    <div className="App">
+    <div className="container">
       <nav>
         <Logo />
         <Toggle />

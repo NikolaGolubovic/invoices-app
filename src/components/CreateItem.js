@@ -1,11 +1,20 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 
-const CreateItem = ({ item, setRefsArr, refsArr }) => {
+const CreateItem = ({ setRefsArr, refsArr }) => {
+  const [qty, setQtx] = useState();
+  const [price, setPrice] = useState();
   const itemNameRef = useRef();
   const qtyRef = useRef();
   const priceRef = useRef();
   useEffect(() => {
-    setRefsArr([...refsArr, itemNameRef, qtyRef, priceRef]);
+    setRefsArr([
+      ...refsArr,
+      [
+        { [`itemNameRef-${refsArr.length}`]: itemNameRef },
+        { [`qtyRef-${refsArr.length}`]: qtyRef },
+        { [`priceRef-${refsArr.length}`]: priceRef },
+      ],
+    ]);
   }, []);
 
   return (
@@ -16,15 +25,25 @@ const CreateItem = ({ item, setRefsArr, refsArr }) => {
       </label>
       <label>
         <p>Qty.</p>
-        <input type="text" ref={qtyRef} />
+        <input
+          type="number"
+          ref={qtyRef}
+          min="0"
+          onChange={(e) => setQtx(e.target.value)}
+        />
       </label>
       <label>
         <p>Price</p>
-        <input type="text" ref={priceRef} />
+        <input
+          type="number"
+          ref={priceRef}
+          min="0"
+          onChange={(e) => setPrice(e.target.value)}
+        />
       </label>
       <div className="total">
         Total
-        {item.total}
+        {qty * price || 0}
       </div>
       <div className="trash">
         <svg width="13" height="16" xmlns="http://www.w3.org/2000/svg">

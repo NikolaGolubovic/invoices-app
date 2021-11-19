@@ -11,13 +11,51 @@ const Invoices = () => {
   useEffect(() => {
     upDataFromLocal(setInvoices);
   }, []);
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+  function setStatusBackground(invoice, opacity = false) {
+    const backOpacity = {
+      background:
+        invoice.status === "paid"
+          ? "var(--green-light)"
+          : invoice.status === "pending"
+          ? "var(--yellow-light)"
+          : "var(--color-draft-light)",
+    };
+    const back = {
+      background:
+        invoice.status === "paid"
+          ? "var(--green)"
+          : invoice.status === "pending"
+          ? "var(--yellow)"
+          : "var(--color-draft)",
+    };
+    return opacity ? back : backOpacity;
+  }
+  function setStatusColor(invoice) {
+    const text = {
+      color:
+        invoice.status === "paid"
+          ? "var(--green)"
+          : invoice.status === "pending"
+          ? "var(--yellow)"
+          : "var(--color-text)",
+    };
+    return text;
+  }
+  function makeDate(dateString) {
+    const date = new Date(dateString);
+    const options = { year: "numeric", month: "short", day: "numeric" };
+    return date.toLocaleDateString("en-GB", options);
+  }
   return (
     <div className="invoices-container">
-      <aside>
+      <aside style={{ display: "none" }}>
         <Create />
       </aside>
-      <main className="invoices-controller">
-        <div className="invoices-controller-desc">
+      <main className="invoices-table">
+        <div className="invoices-controller">
           <h2>Invoices</h2>
           <p>There are {invoices.length} total invoices.</p>
         </div>
@@ -33,7 +71,7 @@ const Invoices = () => {
             className={pano ? "filter-checkboxes.active" : "filter-checkboxes"}
           >
             <label htmlFor="">
-              <input type="checkbox" />
+              <input type="checkbox" onChange={(e) => console.log(e.target)} />
               Paid
             </label>
             <label htmlFor="">
@@ -49,30 +87,43 @@ const Invoices = () => {
         <div className="invoices-controller-add">
           <button>New Invoice</button>
         </div>
+        <hr />
+        <div className="cards">
+          {invoices.map((invoice) => {
+            return (
+              <div className="invoice-card" key={invoice.id}>
+                <div className="invoice-id">
+                  <p>#{invoice.id}</p>
+                </div>
+                <div className="invoice-due">
+                  <p>Due {makeDate(invoice.paymentDue)}</p>
+                </div>
+                <div className="invoice-name">
+                  <p>{invoice.clientName}</p>
+                </div>
+                <div className="invoice-total">
+                  <p>£{numberWithCommas(invoice.total)}</p>
+                </div>
+                <div className="invoice-status">
+                  <div
+                    className="status-button"
+                    style={setStatusBackground(invoice)}
+                  >
+                    <div
+                      className="status-circle"
+                      style={setStatusBackground(invoice, true)}
+                    ></div>
+                    <p style={setStatusColor(invoice)}>{invoice.status}</p>
+                  </div>
+                </div>
+                <div className="invoice-right-icon">
+                  <ArrowRight />
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </main>
-      <hr />
-      <div className="invoice-card">
-        {invoices.map((invoice) => {
-          return (
-            <div key={invoice.id}>
-              <div className="invoice-id">
-                <p>#{invoice.id}</p>
-              </div>
-              <div className="invoice-due">
-                <p>{invoice.paymentDue}</p>
-              </div>
-              <div className="invoice-name">
-                <p>{invoice.clientName}</p>
-              </div>
-              <div className="invoice-total">
-                <p>{invoice.total}</p>
-              </div>
-              <div className="invoice-status">{invoice.status}</div>
-              <ArrowRight />
-            </div>
-          );
-        })}
-      </div>
     </div>
   );
 };

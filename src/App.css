@@ -1,4 +1,21 @@
-:root {}
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&display=swap');
+
+:root {
+  --green: rgb(51, 214, 159);
+  --green-light: rgb(51, 214, 159, 0.1);
+  --yellow: #FF8F00;
+  --yellow-light: rgba(255, 143, 0, 0.1);
+}
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Lato', sans-serif;
+}
 
 .theme-dark {
   --main-background: #141625;
@@ -11,6 +28,10 @@
   --btn-orange-hover: rgb(255, 151, 151);
   --btn-edit: #252945;
   --btn-edit-hover: #FFFFFF;
+  --color-text: hsl(0, 0%, 97%);
+  --color-status: rgb(248, 248, 248);
+  --color-draft: rgb(248, 248, 248);
+  --color-draft-light: rgba(248, 248, 248, 0.2);
 }
 
 .theme-light {
@@ -24,40 +45,175 @@
   --btn-orange-hover: rgb(255, 151, 151);
   --btn-edit: #F9FAFE;
   --btn-edit-hover: #DFE3FA;
+  --color-text: #0c0e16;
+  --color-draft: #1E2139;
+  --color-draft-light: rgb(30, 33, 57, 0.2);
 }
 
 @media (min-width: 280px) {
+
+  .container {
+    min-height: 100vh;
+    background: var(--main-background);
+  }
+
   /* SVGS */
   .svg-logo {
     background-color: #9277FF;
   }
+
   /* NAV */
   nav {
     display: flex;
     width: 100%;
+    height: 30px;
     display: flex;
     justify-content: space-between;
-    background-color: var(--card-background);
+    background-color: #1E2139;
+
   }
+
+
+  .container--toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    margin-right: 30px;
+  }
+
   .filter {
     cursor: pointer;
   }
+
   .arrow {
     transition: 0.2s all;
     transform: scale(1.5);
   }
+
   .arrow.active {
     transform: scale(1.5) rotate(-180deg);
   }
+
   .filter-checkboxes {
     display: none;
   }
+
   .filter-checkboxes.active {
     display: flex;
   }
+
   input.invalid {
     border: 1px solid var(--btn-orange);
   }
+
+  /* INVOICES LIST */
+  .invoices-container {
+    width: 100%;
+    color: var(--color-text);
+  }
+
+  .invoices-table {
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .cards {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .invoice-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    background: var(--card-background);
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 20px 20px;
+    border-radius: 10px;
+    font-weight: 300;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+
+
+  .invoice-card:hover {
+    border: 1px solid var(--btn-purple);
+  }
+
+  .invoice-id {
+    width: 50%;
+    order: 1;
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+
+  .invoice-due {
+    order: 3;
+    width: 50%;
+  }
+
+  .invoice-total {
+    font-weight: 700;
+    position: relative;
+    top: -10px;
+  }
+
+  .invoice-name {
+    width: 50%;
+    order: 2;
+    display: flex;
+    justify-content: flex-end;
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+  }
+
+  .invoice-status {
+    order: 4;
+    width: 50%;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .status-button {
+    width: 110px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    top: 10px;
+    padding: 15px 10px;
+    border-radius: 10px;
+    background: var(--green-light);
+    color: var(--green);
+    font-weight: 600;
+    text-transform: capitalize;
+  }
+
+  .invoice-status p {
+    font-size: 0.85rem;
+    text-align: center;
+  }
+
+  .status-circle {
+    height: 8px;
+    width: 8px;
+    background: var(--green);
+    border-radius: 100%;
+    margin-right: 5px;
+  }
+
+  .invoice-total {
+    order: 5;
+  }
+
+  .invoice-right-icon {
+    display: none;
+  }
+
   /* CALENDAR */
   .react-calendar {
     width: 250px;
@@ -67,54 +223,67 @@
     font-family: Arial, Helvetica, sans-serif;
     line-height: 1.125em;
   }
+
   .react-calendar--doubleView {
     width: 700px;
   }
+
   .react-calendar--doubleView .react-calendar__viewContainer {
     display: flex;
     margin: -0.5em;
   }
+
   .react-calendar--doubleView .react-calendar__viewContainer>* {
     width: 50%;
     margin: 0.5em;
   }
+
   .react-calendar, .react-calendar *, .react-calendar *:before, .react-calendar *:after {
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
   }
+
   .react-calendar button {
     margin: 0;
     border: 0;
     outline: none;
   }
+
   .react-calendar button:enabled:hover {
     cursor: pointer;
   }
+
   .react-calendar__navigation {
     display: flex;
     height: 44px;
     margin-bottom: 1em;
   }
+
   .react-calendar__navigation button {
     min-width: 44px;
     background: none;
   }
+
   .react-calendar__navigation button:enabled:hover, .react-calendar__navigation button:enabled:focus {
     background-color: #e6e6e6;
   }
+
   .react-calendar__navigation button[disabled] {
     background-color: #f0f0f0;
   }
+
   .react-calendar__month-view__weekdays {
     text-align: center;
     text-transform: uppercase;
     font-weight: bold;
     font-size: 0.75em;
   }
+
   .react-calendar__month-view__weekdays__weekday {
     padding: 0.5em;
   }
+
   .react-calendar__month-view__weekNumbers .react-calendar__tile {
     display: flex;
     align-items: center;
@@ -123,52 +292,173 @@
     font-weight: bold;
     padding: calc(0.75em / 0.75) calc(0.5em / 0.75);
   }
+
   .react-calendar__month-view__days__day--weekend {
     color: #d10000;
   }
+
   .react-calendar__month-view__days__day--neighboringMonth {
     color: #757575;
   }
+
   .react-calendar__year-view .react-calendar__tile, .react-calendar__decade-view .react-calendar__tile, .react-calendar__century-view .react-calendar__tile {
     padding: 2em 0.5em;
   }
+
   .react-calendar__tile {
     max-width: 100%;
     text-align: center;
     padding: 0.75em 0.5em;
     background: none;
   }
+
   .react-calendar__tile:disabled {
     background-color: #f0f0f0;
   }
+
   .react-calendar__tile:enabled:hover, .react-calendar__tile:enabled:focus {
     background-color: #e6e6e6;
   }
+
   .react-calendar__tile--now {
     background: #ffff76;
   }
+
   .react-calendar__tile--now:enabled:hover, .react-calendar__tile--now:enabled:focus {
     background: #ffffa9;
   }
+
   .react-calendar__tile--hasActive {
     background: #76baff;
   }
+
   .react-calendar__tile--hasActive:enabled:hover, .react-calendar__tile--hasActive:enabled:focus {
     background: #a9d4ff;
   }
+
   .react-calendar__tile--active {
     background: #006edc;
     color: white;
   }
+
   .react-calendar__tile--active:enabled:hover, .react-calendar__tile--active:enabled:focus {
     background: #1087ff;
   }
+
   .react-calendar--selectRange .react-calendar__tile--hover {
     background-color: #e6e6e6;
   }
+
   .react-calendar__navigation__next2-button, .react-calendar__navigation__prev2-button {
     display: none;
   }
 }
 
-@media (min-width: 769px) {}
+@media (min-width: 750px) {
+  nav {
+    position: absolute;
+    flex-direction: column;
+    min-height: 100%;
+    width: 50px;
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .container--toggle {
+    margin-right: 0px;
+    margin-bottom: 30px;
+  }
+
+  .invoices-table {
+    width: 80%;
+  }
+
+  .invoice-card {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    background: var(--card-background);
+    justify-content: space-between;
+    margin-top: 20px;
+    padding: 20px 20px;
+    border-radius: 10px;
+    font-weight: 300;
+    cursor: pointer;
+    border: 1px solid transparent;
+  }
+
+  .invoice-card>* {
+    flex: 1;
+    display: flex;
+
+  }
+
+  .invoice-card:hover {
+    border: 1px solid var(--btn-purple);
+  }
+
+  .invoice-id {
+    width: auto;
+    order: 1;
+    margin-bottom: 0px;
+  }
+
+  .invoice-due {
+    order: 2;
+    width: auto;
+  }
+
+  .invoice-name {
+    width: auto;
+    order: 3;
+    justify-content: flex-start;
+    margin-bottom: 0px;
+    padding-left: 20px;
+  }
+
+  .invoice-total {
+    font-weight: 700;
+    position: static;
+    order: 4;
+  }
+
+  .invoice-status {
+    order: 5;
+    width: auto;
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .status-button {
+    width: 110px;
+    position: static;
+  }
+
+  .invoice-right-icon {
+    flex: none;
+    display: block;
+    order: 6;
+    width: 10px;
+    transform: scale(1.2);
+  }
+
+  /* CREATE FORM */
+  .create {
+    display: flex;
+    flex-direction: column;
+    max-width: 750px;
+    background: var(--main-background);
+  }
+}
+
+@media (min-width: 1024px) {
+  .invoices-table {
+    width: 60%;
+  }
+}
+
+@media (min-width: 1920px) {
+  .invoices-table {
+    width: 50%;
+  }
+}

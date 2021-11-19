@@ -3,9 +3,11 @@ import Calendar from "react-calendar";
 import CreateItem from "./CreateItem";
 
 const Create = () => {
-  const [value, onChange] = useState(new Date());
+  const [date, changeDate] = useState(new Date());
   const [itemsList, setItemsList] = useState([]);
   const [refsArr, setRefsArr] = useState([]);
+  const [terms, setTerms] = useState(1);
+  // const [valid, setValid] = useState(true);
   const fromAddress = useRef();
   const fromCity = useRef();
   const fromPC = useRef();
@@ -20,25 +22,33 @@ const Create = () => {
 
   useEffect(() => {
     setRefsArr([
-      fromAddress,
-      fromCity,
-      fromPC,
-      fromCountry,
-      toCName,
-      toAddress,
-      toCity,
-      toPC,
-      toCountry,
-      desc,
+      { fromAddress },
+      { fromCity },
+      { fromPC },
+      { fromCountry },
+      { toCName },
+      { toAddress },
+      { toCity },
+      { toPC },
+      { toCountry },
+      { desc },
     ]);
   }, []);
 
   function checkInputs() {
-    refsArr.forEach((elem) => {
-      if (elem.current.value.length === 0) {
-        elem.current.classList.add("invalid");
+    let valid = true;
+    // check validation
+    const refsKeys = [];
+    for (let key of refsArr) {
+      refsKeys.push(...Object.keys(key));
+    }
+    refsArr.flat().forEach((elem) => {
+      const refKey = Object.keys(elem)[0];
+      if (elem[refKey].current.value.length === 0) {
+        valid = false;
+        elem[refKey].current.classList.add("invalid");
       } else {
-        elem.current.classList.remove("invalid");
+        elem[refKey].current.classList.remove("invalid");
       }
     });
     function validateEmail(email) {
@@ -50,10 +60,60 @@ const Create = () => {
       !validateEmail(toCEmail.current.value) ||
       toCEmail.current.value.length === 0
     ) {
+      valid = false;
       toCEmail.current.classList.add("invalid");
     } else {
       toCEmail.current.classList.remove("invalid");
     }
+
+    if (refsArr.length <= 10) {
+      console.log("item must be added");
+    }
+
+    // if (!valid) return;
+    console.log("valid", valid);
+    // create new element for base
+    function randomIntFromInterval(min, max) {
+      return Math.floor(Math.random() * (max - min + 1) + min);
+    }
+    function fourRandomLetters() {
+      let str = "";
+      for (var i = 0; i < 4; i++) {
+        str += String.fromCharCode(65 + Math.floor(Math.random() * 26));
+      }
+      return str;
+    }
+    let newElement = {
+      id: `${randomIntFromInterval(1000, 9999)}${fourRandomLetters()}`,
+      createdAt: date
+        .toLocaleDateString("en-GB")
+        .split("/")
+        .reverse()
+        .join("-"),
+      paymentDue: new Date(date.setDate(date.getDate() + Number(terms)))
+        .toLocaleDateString("en-GB")
+        .split("/")
+        .reverse()
+        .join("-"),
+      description: desc.current.value,
+      paymentTerms: terms,
+      clientName: toCName.current.value,
+      clientEmail: toCEmail.current.value,
+      status: "pending",
+      senderAddress: {
+        street: fromAddress.current.value,
+        city: fromCity.current.value,
+        postCode: fromPC.current.value,
+        country: fromCountry.current.value,
+      },
+      clientAddress: {
+        street: toAddress.current.value,
+        city: toCity.current.value,
+        postCode: toPC.current.value,
+        country: toCountry.current.value,
+      },
+    };
+    console.log(newElement);
   }
   return (
     <div className="create">
@@ -100,10 +160,10 @@ const Create = () => {
         </label>
         <div className="calendar">
           <p>Invoice Date</p>
-          <Calendar onChange={onChange} value={value} calendarType="Hebrew" />
+          <Calendar onChange={changeDate} value={date} calendarType="Hebrew" />
         </div>
         <div className="create-terms">
-          <select name="" id="">
+          <select name="" id="" onChange={(e) => setTerms(e.target.value)}>
             <option value="1">Net 1 Day</option>
             <option value="7">Net 7 Day</option>
             <option value="14">Net 14 Day</option>
@@ -126,17 +186,7 @@ const Create = () => {
         <h2>Item List</h2>
         <ul>
           {itemsList.map((item, itemIndex) => {
-            return (
-              <CreateItem
-                item={item}
-                itemIndex={itemIndex}
-                itemsList={itemsList}
-                setItemsList={setItemsList}
-                setRefsArr={setRefsArr}
-                refsArr={refsArr}
-                key={itemIndex}
-              />
-            );
+            return <CreateItem setRefsArr={setRefsArr} refsArr={refsArr} />;
           })}
         </ul>
         <button
