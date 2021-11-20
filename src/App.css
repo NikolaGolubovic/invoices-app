@@ -5,6 +5,7 @@
   --green-light: rgb(51, 214, 159, 0.1);
   --yellow: #FF8F00;
   --yellow-light: rgba(255, 143, 0, 0.1);
+  --gray: rgb(136, 142, 176);
 }
 
 * {
@@ -32,6 +33,10 @@ body {
   --color-status: rgb(248, 248, 248);
   --color-draft: rgb(248, 248, 248);
   --color-draft-light: rgba(248, 248, 248, 0.2);
+  --input-border: rgb(136, 142, 176, 0.1);
+  --btn-color: rgb(248, 248, 248, 0.8);
+  --btn-back-color: rgb(23, 27, 49);
+
 }
 
 .theme-light {
@@ -48,6 +53,9 @@ body {
   --color-text: #0c0e16;
   --color-draft: #1E2139;
   --color-draft-light: rgb(30, 33, 57, 0.2);
+  --input-border: rgb(136, 142, 176, 0.4);
+  --btn-color: rgb(136, 142, 176);
+  --btn-back-color: rgba(218, 214, 214, 0.5);
 }
 
 @media (min-width: 280px) {
@@ -72,7 +80,6 @@ body {
     background-color: #1E2139;
 
   }
-
 
   .container--toggle {
     display: flex;
@@ -214,149 +221,290 @@ body {
     display: none;
   }
 
-  /* CALENDAR */
-  .react-calendar {
-    width: 250px;
-    max-width: 100%;
-    background: white;
-    border: 1px solid #a0a096;
-    font-family: Arial, Helvetica, sans-serif;
-    line-height: 1.125em;
-  }
-
-  .react-calendar--doubleView {
-    width: 700px;
-  }
-
-  .react-calendar--doubleView .react-calendar__viewContainer {
+  /* CREATE FORM */
+  .create {
     display: flex;
-    margin: -0.5em;
+    flex-direction: column;
+    max-width: 100%;
+    background: var(--main-background);
+    transform: translateX(0px);
+    padding: 20px;
   }
 
-  .react-calendar--doubleView .react-calendar__viewContainer>* {
+  .create-title {
+    margin: 10px 0;
+  }
+
+  .create label {
+    display: flex;
+    flex-direction: column;
+    font-weight: 300;
+    font-size: 0.85rem;
+  }
+
+  .create label>* {
+    margin: 8px 0;
+  }
+
+  .create label input {
+    padding: 15px 10px;
+    background: var(--card-background);
+    border: 1px solid var(--input-border);
+    border-radius: 5px;
+    color: var(--color-text);
+    font-weight: 700;
+  }
+
+  .create label input.invalid {
+    border: 1px solid red;
+  }
+
+  .create label input:focus {
+    outline: 1px solid var(--btn-purple);
+    border: none;
+  }
+
+  /* CREATE BILL FROM */
+
+  .bill-from-title {
+    color: var(--btn-purple);
+    margin: 10px 0;
+  }
+
+  .bill-from-container {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bill-from {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bill-from-location {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+  }
+
+  .bill-from-location>* {
+    width: 30%;
+  }
+
+  /* CREATE BILL TO */
+
+  .bill-to {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .bill-to-title {
+    color: var(--btn-purple);
+    margin: 10px 0;
+  }
+
+
+  .calendar-terms {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .calendar-container {
     width: 50%;
-    margin: 0.5em;
   }
 
-  .react-calendar, .react-calendar *, .react-calendar *:before, .react-calendar *:after {
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
+  .btn-date {
+    width: 95%;
+    border: none;
+    padding: 20px;
+    margin: 10px 0;
+    border-radius: 5px;
+    background: var(--card-background);
+    color: var(--color-text);
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 
-  .react-calendar button {
-    margin: 0;
-    border: 0;
+  .calendar-wrapper {
+    display: block;
+    position: absolute;
+    z-index: 2;
+  }
+
+  .create-terms {
+    width: 50%;
+    border: none;
+    margin: 10px 0;
+    border-radius: 5px;
+    background: var(--card-background);
+    color: var(--color-text);
+    font-weight: 700;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .select-term {
+    width: 50%;
+
+  }
+
+  select {
+    cursor: pointer;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 22px;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /* Remove default arrow */
+    background-image: url("./images/icon-arrow-down.svg");
+    background-repeat: no-repeat;
+    background-position: 95% 50%;
+    background-color: var(--card-background);
+    /* Add custom arrow */
+  }
+
+  select:focus {
+    border: none;
     outline: none;
   }
 
-  .react-calendar button:enabled:hover {
+  /* ITEM LIST  */
+  .item-list {
+    margin-top: 20px;
+  }
+
+  .item-list h3 {
+    color: var(--gray);
+    margin: 20px 0;
+    font-size: 1.1rem;
+  }
+
+  .btn-create-item {
+    background: var(--card-background);
+    border: none;
+    border-radius: 30px;
+    width: 100%;
+    padding: 15px;
+    color: var(--btn-color);
+    font-size: 0.75rem;
+    font-weight: 600;
+    transition: 0.2s all;
     cursor: pointer;
   }
 
-  .react-calendar__navigation {
+  .btn-create-item:hover {
+    background: var(--btn-back-color);
+  }
+
+  /* ITEM LIST CREATE ELEMENT */
+  .create-item {
     display: flex;
-    height: 44px;
-    margin-bottom: 1em;
+    flex-wrap: wrap;
+    position: relative;
   }
 
-  .react-calendar__navigation button {
-    min-width: 44px;
-    background: none;
+  .create-item-name {
+    width: 100%;
   }
 
-  .react-calendar__navigation button:enabled:hover, .react-calendar__navigation button:enabled:focus {
-    background-color: #e6e6e6;
+  .create-item-qty {
+    width: 20%;
   }
 
-  .react-calendar__navigation button[disabled] {
-    background-color: #f0f0f0;
+  .create-item-price {
+    width: 30%;
+    margin: 0 10px;
   }
 
-  .react-calendar__month-view__weekdays {
-    text-align: center;
-    text-transform: uppercase;
-    font-weight: bold;
-    font-size: 0.75em;
-  }
-
-  .react-calendar__month-view__weekdays__weekday {
-    padding: 0.5em;
-  }
-
-  .react-calendar__month-view__weekNumbers .react-calendar__tile {
+  .total {
     display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75em;
-    font-weight: bold;
-    padding: calc(0.75em / 0.75) calc(0.5em / 0.75);
+    flex-direction: column;
+    justify-content: space-between;
   }
 
-  .react-calendar__month-view__days__day--weekend {
-    color: #d10000;
+  .total-title {
+    position: relative;
+    top: 5px;
+    font-size: 0.9rem;
   }
 
-  .react-calendar__month-view__days__day--neighboringMonth {
-    color: #757575;
+  .total-price {
+    position: relative;
+    bottom: 25px;
+    color: var(--btn-color);
   }
 
-  .react-calendar__year-view .react-calendar__tile, .react-calendar__decade-view .react-calendar__tile, .react-calendar__century-view .react-calendar__tile {
-    padding: 2em 0.5em;
+  .trash {
+    position: absolute;
+    bottom: 25px;
+    right: 10px;
+    cursor: pointer;
   }
 
-  .react-calendar__tile {
-    max-width: 100%;
-    text-align: center;
-    padding: 0.75em 0.5em;
-    background: none;
+  .trash:hover svg path {
+    fill: var(--btn-orange);
   }
 
-  .react-calendar__tile:disabled {
-    background-color: #f0f0f0;
+  .buttons-controller {
+    display: flex;
+    margin-top: 20px;
   }
 
-  .react-calendar__tile:enabled:hover, .react-calendar__tile:enabled:focus {
-    background-color: #e6e6e6;
+  .buttons-controller button {
+    padding: 15px 10px;
+    border-radius: 30px;
+    border: none;
+    transition: 0.2s all;
+    cursor: pointer;
+    font-size: 0.8rem;
+    font-weight: 600;
   }
 
-  .react-calendar__tile--now {
-    background: #ffff76;
+  .btn-discard-cont {
+    width: 35%;
   }
 
-  .react-calendar__tile--now:enabled:hover, .react-calendar__tile--now:enabled:focus {
-    background: #ffffa9;
+  .draft-save-cont {
+    width: 65%;
+    display: flex;
+    justify-content: flex-end;
   }
 
-  .react-calendar__tile--hasActive {
-    background: #76baff;
+  .btn-discard, .btn-draft {
+    background: var(--card-background);
+    color: var(--gray);
   }
 
-  .react-calendar__tile--hasActive:enabled:hover, .react-calendar__tile--hasActive:enabled:focus {
-    background: #a9d4ff;
+  .btn-discard:hover,
+  .btn-draft:hover {
+    background: var(--btn-back-color)
   }
 
-  .react-calendar__tile--active {
-    background: #006edc;
+  .btn-draft {
+    margin-right: 5px;
+  }
+
+  .btn-save {
+    background: var(--btn-purple);
     color: white;
   }
 
-  .react-calendar__tile--active:enabled:hover, .react-calendar__tile--active:enabled:focus {
-    background: #1087ff;
-  }
-
-  .react-calendar--selectRange .react-calendar__tile--hover {
-    background-color: #e6e6e6;
-  }
-
-  .react-calendar__navigation__next2-button, .react-calendar__navigation__prev2-button {
-    display: none;
+  .btn-save:hover {
+    background: var(--btn-purple-hover)
   }
 }
 
 @media (min-width: 750px) {
   nav {
-    position: absolute;
+    position: fixed;
     flex-direction: column;
     min-height: 100%;
     width: 50px;
@@ -390,7 +538,6 @@ body {
   .invoice-card>* {
     flex: 1;
     display: flex;
-
   }
 
   .invoice-card:hover {
@@ -420,6 +567,7 @@ body {
     font-weight: 700;
     position: static;
     order: 4;
+    font-size: 1.2rem;
   }
 
   .invoice-status {
@@ -442,13 +590,65 @@ body {
     transform: scale(1.2);
   }
 
-  /* CREATE FORM */
   .create {
     display: flex;
     flex-direction: column;
-    max-width: 750px;
+    max-width: 600px;
     background: var(--main-background);
+    transform: translateX(50px);
+    padding: 50px;
+    overflow: auto;
   }
+
+  /* ITEM LIST CREATE ELEMENT */
+  .create-item {
+    flex-wrap: nowrap;
+    margin-bottom: 20px;
+  }
+
+  .create-item-name {
+    width: 40%;
+  }
+
+  .create-item-qty {
+    width: 10%;
+    margin-left: 10px;
+  }
+
+  .create-item-price {
+    width: 20%;
+    margin: 0 10px;
+  }
+
+  .total {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .total-title {
+    position: relative;
+    top: 5px;
+    font-size: 0.9rem;
+  }
+
+  .total-price {
+    position: relative;
+    bottom: 25px;
+    color: var(--btn-color);
+  }
+
+  .trash {
+    position: absolute;
+    bottom: 25px;
+    right: 10px;
+    cursor: pointer;
+  }
+
+  .buttons-controller button {
+    padding: 15px 20px;
+  }
+
 }
 
 @media (min-width: 1024px) {

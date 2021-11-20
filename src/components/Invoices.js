@@ -4,6 +4,7 @@ import ArrowRight from "./svg/ArrowRight";
 import ArrowDown from "./svg/ArrowDown";
 
 import { upDataFromLocal } from "../utils/storageFunctions";
+import { makeDate } from "../helpers/functions";
 
 const Invoices = () => {
   const [invoices, setInvoices] = useState([]);
@@ -44,15 +45,10 @@ const Invoices = () => {
     };
     return text;
   }
-  function makeDate(dateString) {
-    const date = new Date(dateString);
-    const options = { year: "numeric", month: "short", day: "numeric" };
-    return date.toLocaleDateString("en-GB", options);
-  }
   return (
     <div className="invoices-container">
-      <aside style={{ display: "none" }}>
-        <Create />
+      <aside>
+        <Create invoices={invoices} setInvoices={setInvoices} />
       </aside>
       <main className="invoices-table">
         <div className="invoices-controller">

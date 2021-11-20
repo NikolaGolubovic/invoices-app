@@ -1,12 +1,16 @@
 import React, { useState, useEffect, useRef } from "react";
 import Calendar from "react-calendar";
 import CreateItem from "./CreateItem";
+import IconDate from "./svg/IconDate";
 
-const Create = () => {
+import { makeDate } from "../helpers/functions";
+
+const Create = ({ invoices, setInvoices }) => {
   const [date, changeDate] = useState(new Date());
   const [itemsList, setItemsList] = useState([]);
   const [refsArr, setRefsArr] = useState([]);
   const [terms, setTerms] = useState(1);
+  const [calendarOpen, setCalendarOpen] = useState(false);
   // const [valid, setValid] = useState(true);
   const fromAddress = useRef();
   const fromCity = useRef();
@@ -35,9 +39,37 @@ const Create = () => {
     ]);
   }, []);
 
+  useEffect(() => {
+    document.addEventListener("click", function (event) {
+      if (
+        !event.target.matches(".react-calendar") &&
+        !event.target.matches(".btn-date")
+      ) {
+        setCalendarOpen(false);
+      }
+    });
+  }, []);
+
+  function validateEmail(email) {
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
+
   function checkInputs() {
     let valid = true;
     // check validation
+    console.log(
+      "top function"
+      // refsArr
+      //   .slice(10)
+      //   .reduce(
+      //     (prev, next) =>
+      //       prev.qtyRef.current.value * prev.priceRef.current.value +
+      //       next.qtyRef.current.value * next.priceRef.current.value,
+      //     0
+      //   )
+    );
     const refsKeys = [];
     for (let key of refsArr) {
       refsKeys.push(...Object.keys(key));
@@ -51,11 +83,6 @@ const Create = () => {
         elem[refKey].current.classList.remove("invalid");
       }
     });
-    function validateEmail(email) {
-      const re =
-        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return re.test(String(email).toLowerCase());
-    }
     if (
       !validateEmail(toCEmail.current.value) ||
       toCEmail.current.value.length === 0
@@ -71,7 +98,7 @@ const Create = () => {
     }
 
     // if (!valid) return;
-    console.log("valid", valid);
+
     // create new element for base
     function randomIntFromInterval(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min);
@@ -112,58 +139,128 @@ const Create = () => {
         postCode: toPC.current.value,
         country: toCountry.current.value,
       },
+      items: refsArr.slice(10).map((elemArr) => {
+        const elem = elemArr[0];
+        console.log(elem);
+        return {
+          name: elem.itemNameRef.current.value,
+          quantity: +elem.qtyRef.current.value,
+          price: +elem.priceRef.current.value,
+          total: elem.qtyRef.current.value * elem.priceRef.current.value,
+        };
+      }),
+      total: refsArr
+        .slice(10)
+        .flat()
+        .map((elem) => {
+          return {
+            total: elem.qtyRef.current.value * elem.priceRef.current.value,
+          };
+        })
+        .reduce((prev, next) => prev + next.total, 0),
     };
-    console.log(newElement);
+    const storageArr = JSON.parse(localStorage.getItem("invoices-app"));
+    storageArr.unshift(newElement);
+    setInvoices([newElement, ...invoices]);
+    localStorage.setItem("invoices-app", JSON.stringify(storageArr));
+  }
+  function removeAfterBlur(e) {
+    if (e.target.type === "email") {
+      if (validateEmail(e.target.value)) {
+        e.target.classList.remove("invalid");
+      } else {
+        e.target.classList.add("invalid");
+      }
+    } else {
+      if (e.target.value.length > 0) {
+        e.target.classList.remove("invalid");
+      } else {
+        e.target.classList.add("invalid");
+      }
+    }
   }
   return (
     <div className="create">
+      <div className="create-title">
+        <h1>Create Invoice</h1>
+      </div>
       <div className="bill-from">
-        <p>Bill From</p>
-        <div className="bill-from">
-          <label htmlFor="">
-            Street Address
-            <input type="text" ref={fromAddress} />
+        <p className="bill-from-title">Bill From</p>
+        <label className="bill-from-street">
+          Street Address
+          <input type="text" ref={fromAddress} onBlur={removeAfterBlur} />
+        </label>
+        <div className="bill-from-location">
+          <label className="bill-from-city">
+            City <input type="text" ref={fromCity} onBlur={removeAfterBlur} />
           </label>
-          <label htmlFor="">
-            City <input type="text" ref={fromCity} />
+          <label className="bill-from-post">
+            Post Code{" "}
+            <input type="text" ref={fromPC} onBlur={removeAfterBlur} />
           </label>
-          <label htmlFor="">
-            Post Code <input type="text" ref={fromPC} />
-          </label>
-          <label htmlFor="">
-            Country <input type="text" ref={fromCountry} />
+          <label className="bill-from-country">
+            Country{" "}
+            <input type="text" ref={fromCountry} onBlur={removeAfterBlur} />
           </label>
         </div>
       </div>
       <div className="bill-to">
-        <p>Bill To</p>
+        <p className="bill-to-title">Bill To</p>
         <label htmlFor="">
           Client's Name
-          <input type="text" ref={toCName} />
+          <input type="text" ref={toCName} onBlur={removeAfterBlur} />
         </label>
         <label htmlFor="">
           Client's Email
-          <input type="email" ref={toCEmail} />
+          <input type="email" ref={toCEmail} onBlur={removeAfterBlur} />
         </label>
         <label htmlFor="">
-          Street Address <input type="text" ref={toAddress} />
+          Street Address{" "}
+          <input type="text" ref={toAddress} onBlur={removeAfterBlur} />
         </label>
-
-        <label htmlFor="">
-          City <input type="text" ref={toCity} />
-        </label>
-        <label htmlFor="">
-          Post Code <input type="text" ref={toPC} />
-        </label>
-        <label htmlFor="">
-          Country <input type="text" ref={toCountry} />
-        </label>
-        <div className="calendar">
-          <p>Invoice Date</p>
-          <Calendar onChange={changeDate} value={date} calendarType="Hebrew" />
+        <div className="bill-from-location">
+          <label htmlFor="">
+            City <input type="text" ref={toCity} onBlur={removeAfterBlur} />
+          </label>
+          <label htmlFor="">
+            Post Code <input type="text" ref={toPC} onBlur={removeAfterBlur} />
+          </label>
+          <label htmlFor="">
+            Country{" "}
+            <input type="text" ref={toCountry} onBlur={removeAfterBlur} />
+          </label>
         </div>
-        <div className="create-terms">
-          <select name="" id="" onChange={(e) => setTerms(e.target.value)}>
+        <div className="loner-date">
+          <p>Invoice Date</p>
+        </div>
+        <div className="calendar-terms">
+          <div className="calendar-container">
+            <button className="btn-date" onClick={() => setCalendarOpen(true)}>
+              <p>{makeDate(date)}</p> <IconDate />
+            </button>
+            <div
+              className="calendar-wrapper"
+              onClick={(e) => {
+                if (e.currentTarget === e.target) {
+                  setCalendarOpen(false);
+                }
+              }}
+              style={{ display: calendarOpen ? "block" : "none" }}
+            >
+              <Calendar
+                onChange={changeDate}
+                value={date}
+                calendarType="Hebrew"
+              />
+            </div>
+          </div>
+
+          <select
+            className="select-term"
+            name=""
+            id=""
+            onChange={(e) => setTerms(e.target.value)}
+          >
             <option value="1">Net 1 Day</option>
             <option value="7">Net 7 Day</option>
             <option value="14">Net 14 Day</option>
@@ -171,36 +268,55 @@ const Create = () => {
           </select>
         </div>
         <div className="create-descrption">
-          <label htmlFor="">
+          <label>
             <p>Description</p>
             <input
               type="text"
               placeholder="e.g. Graphic Design Service"
               ref={desc}
+              onBlur={removeAfterBlur}
             />
           </label>
         </div>
       </div>
 
       <div className="item-list">
-        <h2>Item List</h2>
+        <h3>ItemList</h3>
         <ul>
           {itemsList.map((item, itemIndex) => {
-            return <CreateItem setRefsArr={setRefsArr} refsArr={refsArr} />;
+            return (
+              <CreateItem
+                key={item.id}
+                setRefsArr={setRefsArr}
+                refsArr={refsArr}
+                removeAfterBlur={removeAfterBlur}
+                itemsList={itemsList}
+                setItemsList={setItemsList}
+                id={item.id}
+                itemIndex={itemIndex}
+              />
+            );
           })}
         </ul>
         <button
           onClick={() => {
-            setItemsList([...itemsList, {}]);
+            setItemsList([...itemsList, { id: itemsList.length + 1 }]);
           }}
+          className="btn-create-item"
         >
           + Add New Item
         </button>
       </div>
-      <div className="buttons">
-        <button>Discord</button>
-        <button>Save Draft</button>
-        <button onClick={() => checkInputs()}>Save & Send</button>
+      <div className="buttons-controller">
+        <div className="btn-discard-cont">
+          <button className="btn-discard">Discard</button>
+        </div>
+        <div className="draft-save-cont">
+          <button className="btn-draft">Save Draft</button>
+          <button className="btn-save" onClick={() => checkInputs()}>
+            Save & Send
+          </button>
+        </div>
       </div>
     </div>
   );

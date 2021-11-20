@@ -1,8 +1,8 @@
 import React, { useEffect, useContext } from "react";
 import "./App.css";
+import "./calendar.css";
 
 import Logo from "./components/svg/Logo";
-import Sun from "./components/svg/Sun";
 
 import ACTIONS from "./reducer/ACTIONS";
 import { InvoiceContext } from "./context/invoiceContext";
