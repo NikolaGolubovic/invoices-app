@@ -51,6 +51,7 @@ const CreateItem = ({
         <p className="total-price">{qty * price || 0}</p>
       </div>
       <div
+        className="trash"
         onClick={() => {
           console.log("from trash", itemIndex + 10, refsArr[itemIndex + 10]);
           setItemsList(itemsList.filter((item) => item.id !== id));

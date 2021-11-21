@@ -9,9 +9,11 @@ import { makeDate } from "../helpers/functions";
 const Invoices = () => {
   const [invoices, setInvoices] = useState([]);
   const [pano, setPano] = useState(false);
+  const [createOpen, setCreateOpen] = useState(false);
   useEffect(() => {
     upDataFromLocal(setInvoices);
   }, []);
+  useEffect(() => {});
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
@@ -48,42 +50,61 @@ const Invoices = () => {
   return (
     <div className="invoices-container">
       <aside>
-        <Create invoices={invoices} setInvoices={setInvoices} />
+        <Create
+          invoices={invoices}
+          setInvoices={setInvoices}
+          createOpen={createOpen}
+          setCreateOpen={setCreateOpen}
+        />
       </aside>
-      <main className="invoices-table">
+      <main
+        className="invoices-table"
+        style={{ overflowY: createOpen && "hidden" }}
+      >
         <div className="invoices-controller">
-          <h2>Invoices</h2>
-          <p>There are {invoices.length} total invoices.</p>
+          <div className="invoices-controller-desc">
+            <h2>Invoices</h2>
+            <p>There are {invoices.length} total invoices.</p>
+          </div>
+          <div className="filter">
+            <div className="filter-status" onClick={() => setPano(!pano)}>
+              <p>Filter by status</p>
+              <span>
+                <ArrowDown pano={pano} />
+              </span>
+            </div>
+            <div
+              className={
+                pano ? "filter-checkboxes active" : "filter-checkboxes"
+              }
+            >
+              <label htmlFor="">
+                <input
+                  type="checkbox"
+                  onChange={(e) => console.log(e.target)}
+                />
+                Paid
+              </label>
+              <label htmlFor="">
+                <input type="checkbox" />
+                Pending
+              </label>
+              <label htmlFor="">
+                <input type="checkbox" />
+                Draft
+              </label>
+            </div>
+          </div>
+          <div className="invoices-controller-add">
+            <button
+              className="btn-new-invoice"
+              onClick={() => setCreateOpen(true)}
+            >
+              <span>+</span>New Invoice
+            </button>
+          </div>
         </div>
-        <div className="filter">
-          <div className="filter-status" onClick={() => setPano(!pano)}>
-            <p>Filter By Status</p>
 
-            <span>
-              <ArrowDown pano={pano} />
-            </span>
-          </div>
-          <div
-            className={pano ? "filter-checkboxes.active" : "filter-checkboxes"}
-          >
-            <label htmlFor="">
-              <input type="checkbox" onChange={(e) => console.log(e.target)} />
-              Paid
-            </label>
-            <label htmlFor="">
-              <input type="checkbox" />
-              Pending
-            </label>
-            <label htmlFor="">
-              <input type="checkbox" />
-              Draft
-            </label>
-          </div>
-        </div>
-        <div className="invoices-controller-add">
-          <button>New Invoice</button>
-        </div>
-        <hr />
         <div className="cards">
           {invoices.map((invoice) => {
             return (

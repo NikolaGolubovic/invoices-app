@@ -5,14 +5,14 @@ import IconDate from "./svg/IconDate";
 
 import { makeDate } from "../helpers/functions";
 
-const Create = ({ invoices, setInvoices }) => {
+const Create = ({ invoices, setInvoices, createOpen, setCreateOpen }) => {
   const [date, changeDate] = useState(new Date());
   const [itemsList, setItemsList] = useState([]);
   const [refsArr, setRefsArr] = useState([]);
   const [terms, setTerms] = useState(1);
   const [calendarOpen, setCalendarOpen] = useState(false);
-  // const [valid, setValid] = useState(true);
-  const fromAddress = useRef();
+
+  const fromAddress = useRef("hello world");
   const fromCity = useRef();
   const fromPC = useRef();
   const fromCountry = useRef();
@@ -41,11 +41,16 @@ const Create = ({ invoices, setInvoices }) => {
 
   useEffect(() => {
     document.addEventListener("click", function (event) {
+      console.log(event.target);
       if (
         !event.target.matches(".react-calendar") &&
+        !event.target.matches(".btn-date p") &&
         !event.target.matches(".btn-date")
       ) {
         setCalendarOpen(false);
+      }
+      if (event.target.matches(".wrapper-create")) {
+        setCreateOpen(false);
       }
     });
   }, []);
@@ -58,18 +63,6 @@ const Create = ({ invoices, setInvoices }) => {
 
   function checkInputs() {
     let valid = true;
-    // check validation
-    console.log(
-      "top function"
-      // refsArr
-      //   .slice(10)
-      //   .reduce(
-      //     (prev, next) =>
-      //       prev.qtyRef.current.value * prev.priceRef.current.value +
-      //       next.qtyRef.current.value * next.priceRef.current.value,
-      //     0
-      //   )
-    );
     const refsKeys = [];
     for (let key of refsArr) {
       refsKeys.push(...Object.keys(key));
@@ -97,7 +90,7 @@ const Create = ({ invoices, setInvoices }) => {
       console.log("item must be added");
     }
 
-    // if (!valid) return;
+    if (!valid) return;
 
     // create new element for base
     function randomIntFromInterval(min, max) {
@@ -180,142 +173,153 @@ const Create = ({ invoices, setInvoices }) => {
     }
   }
   return (
-    <div className="create">
-      <div className="create-title">
-        <h1>Create Invoice</h1>
-      </div>
-      <div className="bill-from">
-        <p className="bill-from-title">Bill From</p>
-        <label className="bill-from-street">
-          Street Address
-          <input type="text" ref={fromAddress} onBlur={removeAfterBlur} />
-        </label>
-        <div className="bill-from-location">
-          <label className="bill-from-city">
-            City <input type="text" ref={fromCity} onBlur={removeAfterBlur} />
-          </label>
-          <label className="bill-from-post">
-            Post Code{" "}
-            <input type="text" ref={fromPC} onBlur={removeAfterBlur} />
-          </label>
-          <label className="bill-from-country">
-            Country{" "}
-            <input type="text" ref={fromCountry} onBlur={removeAfterBlur} />
-          </label>
+    <div className={createOpen ? "wrapper-create active" : "wrapper-create"}>
+      <div className={createOpen ? "create active" : "create"}>
+        <div className="create-title">
+          <h1>Create Invoice</h1>
         </div>
-      </div>
-      <div className="bill-to">
-        <p className="bill-to-title">Bill To</p>
-        <label htmlFor="">
-          Client's Name
-          <input type="text" ref={toCName} onBlur={removeAfterBlur} />
-        </label>
-        <label htmlFor="">
-          Client's Email
-          <input type="email" ref={toCEmail} onBlur={removeAfterBlur} />
-        </label>
-        <label htmlFor="">
-          Street Address{" "}
-          <input type="text" ref={toAddress} onBlur={removeAfterBlur} />
-        </label>
-        <div className="bill-from-location">
-          <label htmlFor="">
-            City <input type="text" ref={toCity} onBlur={removeAfterBlur} />
+        <div className="bill-from">
+          <p className="bill-from-title">Bill From</p>
+          <label className="bill-from-street">
+            Street Address
+            <input type="text" ref={fromAddress} onBlur={removeAfterBlur} />
           </label>
-          <label htmlFor="">
-            Post Code <input type="text" ref={toPC} onBlur={removeAfterBlur} />
-          </label>
-          <label htmlFor="">
-            Country{" "}
-            <input type="text" ref={toCountry} onBlur={removeAfterBlur} />
-          </label>
-        </div>
-        <div className="loner-date">
-          <p>Invoice Date</p>
-        </div>
-        <div className="calendar-terms">
-          <div className="calendar-container">
-            <button className="btn-date" onClick={() => setCalendarOpen(true)}>
-              <p>{makeDate(date)}</p> <IconDate />
-            </button>
-            <div
-              className="calendar-wrapper"
-              onClick={(e) => {
-                if (e.currentTarget === e.target) {
-                  setCalendarOpen(false);
-                }
-              }}
-              style={{ display: calendarOpen ? "block" : "none" }}
-            >
-              <Calendar
-                onChange={changeDate}
-                value={date}
-                calendarType="Hebrew"
-              />
-            </div>
+          <div className="bill-from-location">
+            <label className="bill-from-city">
+              City <input type="text" ref={fromCity} onBlur={removeAfterBlur} />
+            </label>
+            <label className="bill-from-post">
+              Post Code{" "}
+              <input type="text" ref={fromPC} onBlur={removeAfterBlur} />
+            </label>
+            <label className="bill-from-country">
+              Country{" "}
+              <input type="text" ref={fromCountry} onBlur={removeAfterBlur} />
+            </label>
           </div>
-
-          <select
-            className="select-term"
-            name=""
-            id=""
-            onChange={(e) => setTerms(e.target.value)}
-          >
-            <option value="1">Net 1 Day</option>
-            <option value="7">Net 7 Day</option>
-            <option value="14">Net 14 Day</option>
-            <option value="30">Net 30 Day</option>
-          </select>
         </div>
-        <div className="create-descrption">
-          <label>
-            <p>Description</p>
-            <input
-              type="text"
-              placeholder="e.g. Graphic Design Service"
-              ref={desc}
-              onBlur={removeAfterBlur}
-            />
+        <div className="bill-to">
+          <p className="bill-to-title">Bill To</p>
+          <label htmlFor="">
+            Client's Name
+            <input type="text" ref={toCName} onBlur={removeAfterBlur} />
           </label>
-        </div>
-      </div>
+          <label htmlFor="">
+            Client's Email
+            <input type="email" ref={toCEmail} onBlur={removeAfterBlur} />
+          </label>
+          <label htmlFor="">
+            Street Address{" "}
+            <input type="text" ref={toAddress} onBlur={removeAfterBlur} />
+          </label>
+          <div className="bill-from-location">
+            <label htmlFor="">
+              City <input type="text" ref={toCity} onBlur={removeAfterBlur} />
+            </label>
+            <label htmlFor="">
+              Post Code{" "}
+              <input type="text" ref={toPC} onBlur={removeAfterBlur} />
+            </label>
+            <label htmlFor="">
+              Country{" "}
+              <input type="text" ref={toCountry} onBlur={removeAfterBlur} />
+            </label>
+          </div>
+          <div className="loner-date">
+            <p>Invoice Date</p>
+          </div>
+          <div className="calendar-terms">
+            <div className="calendar-container">
+              <button
+                className="btn-date"
+                onClick={() => setCalendarOpen(true)}
+              >
+                <p>{makeDate(date)}</p> <IconDate />
+              </button>
+              <div
+                className="calendar-wrapper"
+                onClick={(e) => {
+                  if (e.currentTarget === e.target) {
+                    setCalendarOpen(false);
+                  }
+                }}
+                style={{ display: calendarOpen ? "block" : "none" }}
+              >
+                <Calendar
+                  onChange={changeDate}
+                  value={date}
+                  calendarType="Hebrew"
+                />
+              </div>
+            </div>
 
-      <div className="item-list">
-        <h3>ItemList</h3>
-        <ul>
-          {itemsList.map((item, itemIndex) => {
-            return (
-              <CreateItem
-                key={item.id}
-                setRefsArr={setRefsArr}
-                refsArr={refsArr}
-                removeAfterBlur={removeAfterBlur}
-                itemsList={itemsList}
-                setItemsList={setItemsList}
-                id={item.id}
-                itemIndex={itemIndex}
+            <select
+              className="select-term"
+              name=""
+              id=""
+              onChange={(e) => setTerms(e.target.value)}
+            >
+              <option value="1">Net 1 Day</option>
+              <option value="7">Net 7 Day</option>
+              <option value="14">Net 14 Day</option>
+              <option value="30">Net 30 Day</option>
+            </select>
+          </div>
+          <div className="create-descrption">
+            <label>
+              <p>Description</p>
+              <input
+                type="text"
+                placeholder="e.g. Graphic Design Service"
+                ref={desc}
+                onBlur={removeAfterBlur}
               />
-            );
-          })}
-        </ul>
-        <button
-          onClick={() => {
-            setItemsList([...itemsList, { id: itemsList.length + 1 }]);
-          }}
-          className="btn-create-item"
-        >
-          + Add New Item
-        </button>
-      </div>
-      <div className="buttons-controller">
-        <div className="btn-discard-cont">
-          <button className="btn-discard">Discard</button>
+            </label>
+          </div>
         </div>
-        <div className="draft-save-cont">
-          <button className="btn-draft">Save Draft</button>
-          <button className="btn-save" onClick={() => checkInputs()}>
-            Save & Send
+
+        <div className="item-list">
+          <h3>ItemList</h3>
+          <ul>
+            {itemsList.map((item, itemIndex) => {
+              return (
+                <CreateItem
+                  key={item.id}
+                  setRefsArr={setRefsArr}
+                  refsArr={refsArr}
+                  removeAfterBlur={removeAfterBlur}
+                  itemsList={itemsList}
+                  setItemsList={setItemsList}
+                  id={item.id}
+                  itemIndex={itemIndex}
+                />
+              );
+            })}
+          </ul>
+          <button
+            onClick={() => {
+              setItemsList([...itemsList, { id: itemsList.length + 1 }]);
+            }}
+            className="btn-create-item"
+          >
+            + Add New Item
           </button>
+        </div>
+        <div className="buttons-controller">
+          <div className="btn-discard-cont">
+            <button
+              className="btn-discard"
+              onClick={() => setCreateOpen(false)}
+            >
+              Discard
+            </button>
+          </div>
+          <div className="draft-save-cont">
+            <button className="btn-draft">Save Draft</button>
+            <button className="btn-save" onClick={() => checkInputs()}>
+              Save & Send
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -12,6 +12,7 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
+
 }
 
 body {
@@ -89,27 +90,6 @@ body {
     margin-right: 30px;
   }
 
-  .filter {
-    cursor: pointer;
-  }
-
-  .arrow {
-    transition: 0.2s all;
-    transform: scale(1.5);
-  }
-
-  .arrow.active {
-    transform: scale(1.5) rotate(-180deg);
-  }
-
-  .filter-checkboxes {
-    display: none;
-  }
-
-  .filter-checkboxes.active {
-    display: flex;
-  }
-
   input.invalid {
     border: 1px solid var(--btn-orange);
   }
@@ -125,6 +105,132 @@ body {
     margin: 0 auto;
     display: flex;
     flex-direction: column;
+  }
+
+  .invoices-controller {
+    display: flex;
+    color: var(--color-text);
+    padding: 10px 0;
+    height: 60px;
+  }
+
+  .invoices-controller-desc {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .invoices-controller-desc p {
+    font-size: 0.8rem;
+    color: var(--gray);
+  }
+
+  .filter {
+    align-self: flex-end;
+    margin-left: auto;
+    margin-right: 30px;
+    height: 100%;
+    cursor: pointer;
+    position: relative;
+  }
+
+  .arrow {
+    transition: 0.2s all;
+    transform: scale(1);
+    margin-bottom: 3px;
+  }
+
+  .arrow.active {
+    transform: scale(1) rotate(-180deg);
+  }
+
+  .filter-checkboxes {
+    display: none;
+    position: absolute;
+    bottom: -120px;
+    left: -40px;
+    width: 160%;
+    flex-direction: column;
+    background: var(--card-background);
+    padding: 20px;
+    border-radius: 5px;
+  }
+
+  .filter-checkboxes.active {
+    display: flex;
+  }
+
+  .filter-checkboxes label {
+    margin: 5px 0;
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+  }
+
+  .filter-status {
+    display: flex;
+    height: 100%;
+    align-items: center;
+  }
+
+  input[type="checkbox"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 16px;
+    height: 16px;
+    background-color: var(--main-background);
+    margin-right: 5px;
+  }
+
+  input[type="checkbox"]:checked {
+    background-image: url("./images/icon-check.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: var(--btn-purple);
+  }
+
+  .filter-status p {
+    margin-right: 10px;
+    font-size: 0.8rem;
+  }
+
+  .btn-new-invoice {
+    background: var(--btn-purple);
+    border: none;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 30px;
+    cursor: pointer;
+  }
+
+  .btn-new-invoice {
+    background: var(--btn-purple);
+    height: 50px;
+    width: 140px;
+    display: flex;
+    align-items: center;
+    font-size: 0.8rem;
+    font-weight: 700;
+    transition: 0.2s all;
+  }
+
+  .btn-new-invoice:hover {
+    background: var(--btn-purple-hover);
+  }
+
+  .btn-new-invoice span {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: white;
+    color: var(--btn-purple);
+    border-radius: 50%;
+    height: 25px;
+    width: 25px;
+    position: relative;
+    right: 10px;
+    font-size: 1.3rem;
   }
 
   .cards {
@@ -222,13 +328,37 @@ body {
   }
 
   /* CREATE FORM */
+  .wrapper-create {
+    height: 100%;
+    width: 100%;
+    background: transparent;
+    position: absolute;
+    z-index: -1;
+    display: block;
+    background: rgb(23, 27, 49, 0.2)
+  }
+
+  .wrapper-create.active {
+    z-index: 2;
+  }
+
   .create {
     display: flex;
     flex-direction: column;
     max-width: 100%;
+    height: 100vh;
     background: var(--main-background);
-    transform: translateX(0px);
     padding: 20px;
+    position: fixed;
+    top: 0;
+    left: -100%;
+    overflow: auto;
+    transition: ease-in-out 0.4s left;
+    z-index: 2;
+  }
+
+  .create.active {
+    left: 0%;
   }
 
   .create-title {
@@ -363,12 +493,10 @@ body {
     -webkit-appearance: none;
     -moz-appearance: none;
     appearance: none;
-    /* Remove default arrow */
     background-image: url("./images/icon-arrow-down.svg");
     background-repeat: no-repeat;
     background-position: 95% 50%;
     background-color: var(--card-background);
-    /* Add custom arrow */
   }
 
   select:focus {
@@ -510,6 +638,7 @@ body {
     width: 50px;
     display: flex;
     justify-content: space-between;
+    z-index: 100;
   }
 
   .container--toggle {
@@ -527,12 +656,13 @@ body {
     align-items: center;
     background: var(--card-background);
     justify-content: space-between;
-    margin-top: 20px;
-    padding: 20px 20px;
+    margin-top: 5px;
+    padding: 10px 10px;
     border-radius: 10px;
     font-weight: 300;
     cursor: pointer;
     border: 1px solid transparent;
+    transform: scale(0.9);
   }
 
   .invoice-card>* {
@@ -601,6 +731,7 @@ body {
   }
 
   /* ITEM LIST CREATE ELEMENT */
+
   .create-item {
     flex-wrap: nowrap;
     margin-bottom: 20px;
@@ -653,12 +784,18 @@ body {
 
 @media (min-width: 1024px) {
   .invoices-table {
-    width: 60%;
+    width: 65%;
+  }
+}
+
+@media (min-width: 1440px) {
+  .invoices-table {
+    width: 50%;
   }
 }
 
 @media (min-width: 1920px) {
   .invoices-table {
-    width: 50%;
+    width: 40%;
   }
 }
