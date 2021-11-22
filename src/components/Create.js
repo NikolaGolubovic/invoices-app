@@ -99,15 +99,15 @@ const Create = ({
     }
     console.log(refsArr);
     refsArr.flat().forEach((elem) => {
-      console.log("elem TESTING", elem);
-      const refKey = Object.keys(elem)[0];
+      const refKey = Object.keys(elem);
       console.log(refKey);
-      console.log(elem[refKey].current.type);
-      if (elem[refKey].current.value.length === 0) {
-        valid = false;
-        elem[refKey].current.classList.add("invalid");
-      } else {
-        elem[refKey].current.classList.remove("invalid");
+      for (let key of refKey) {
+        if (elem[key].current.value.length === 0) {
+          valid = false;
+          elem[key].current.classList.add("invalid");
+        } else {
+          elem[key].current.classList.remove("invalid");
+        }
       }
     });
     if (
