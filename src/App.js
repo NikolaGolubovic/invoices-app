@@ -1,24 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect, useContext } from "react";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import "./App.css";
+import "./calendar.css";
+
+import ACTIONS from "./reducer/ACTIONS";
+import { InvoiceContext } from "./context/invoiceContext";
+
+import { keepTheme } from "./utils/themes";
+
+import Invoices from "./components/Invoices";
+import SingleInvoice from "./components/SingleInvoice";
+import Nav from "./components/Nav";
 
 function App() {
+  const invoiceContext = useContext(InvoiceContext);
+
+  useEffect(() => {
+    keepTheme();
+  }, []);
+  // const { dispatch } = invoiceContext;
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Router>
+        <Nav />
+        <Routes>
+          <Route path="/" element={<Invoices />} />
+          <Route path="invoice/:id" element={<SingleInvoice />} />
+        </Routes>
+      </Router>
+    </>
   );
 }
 
