@@ -16,9 +16,8 @@ const SingleInvoice = () => {
   const storage = JSON.parse(localStorage.getItem("invoices-app"));
   const itemsTitles = ["Item Name", "QTY.", "Price", "Total"];
   useEffect(() => {
-    console.log(storage.filter((elem) => elem.id === params.id)[0]);
     setInvoice(storage.filter((elem) => elem.id === params.id)[0]);
-  }, []);
+  }, [params.id]);
   function setStatusBackground(invoice, opacity = false) {
     const backOpacity = {
       background:
