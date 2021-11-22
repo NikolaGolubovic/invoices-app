@@ -41,11 +41,12 @@ const Create = ({ invoices, setInvoices, createOpen, setCreateOpen }) => {
 
   useEffect(() => {
     document.addEventListener("click", function (event) {
-      console.log(event.target);
       if (
         !event.target.matches(".react-calendar") &&
         !event.target.matches(".btn-date p") &&
-        !event.target.matches(".btn-date")
+        !event.target.matches(".btn-date") &&
+        !event.target.matches(".calendar-icon") &&
+        !event.target.matches(".calendar-path")
       ) {
         setCalendarOpen(false);
       }
@@ -96,15 +97,15 @@ const Create = ({ invoices, setInvoices, createOpen, setCreateOpen }) => {
     function randomIntFromInterval(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min);
     }
-    function fourRandomLetters() {
+    function twoRandomLetters() {
       let str = "";
-      for (var i = 0; i < 4; i++) {
+      for (var i = 0; i < 2; i++) {
         str += String.fromCharCode(65 + Math.floor(Math.random() * 26));
       }
       return str;
     }
     let newElement = {
-      id: `${randomIntFromInterval(1000, 9999)}${fourRandomLetters()}`,
+      id: `${twoRandomLetters()}${randomIntFromInterval(1000, 9999)}`,
       createdAt: date
         .toLocaleDateString("en-GB")
         .split("/")
@@ -229,11 +230,11 @@ const Create = ({ invoices, setInvoices, createOpen, setCreateOpen }) => {
             <p>Invoice Date</p>
           </div>
           <div className="calendar-terms">
-            <div className="calendar-container">
-              <button
-                className="btn-date"
-                onClick={() => setCalendarOpen(true)}
-              >
+            <div
+              className="calendar-container"
+              onClick={() => setCalendarOpen(!calendarOpen)}
+            >
+              <button className="btn-date">
                 <p>{makeDate(date)}</p> <IconDate />
               </button>
               <div

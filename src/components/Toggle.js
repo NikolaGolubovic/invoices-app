@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import "../App.css";
 import { setTheme } from "../utils/themes";
+import Moon from "./svg/Moon";
 import Sun from "./svg/Sun";
 
 function Toggle() {
@@ -27,7 +28,11 @@ function Toggle() {
 
   return (
     <div className="container--toggle">
-      <Sun handleOnClick={handleOnClick} />
+      {togClass === "dark" ? (
+        <Sun handleOnClick={handleOnClick} />
+      ) : (
+        <Moon handleOnClick={handleOnClick} />
+      )}
     </div>
   );
 }

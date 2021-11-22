@@ -14,6 +14,7 @@ const IconDate = () => {
           fill="#7E88C3"
           fillRule="nonzero"
           opacity=".5"
+          className="calendar-path"
         />
       </svg>
     </div>

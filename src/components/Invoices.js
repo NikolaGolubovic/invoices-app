@@ -1,51 +1,37 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import Create from "../components/Create";
 import ArrowRight from "./svg/ArrowRight";
 import ArrowDown from "./svg/ArrowDown";
 
 import { upDataFromLocal } from "../utils/storageFunctions";
-import { makeDate } from "../helpers/functions";
+import {
+  makeDate,
+  numberWithCommas,
+  setStatusBackground,
+  setStatusColor,
+} from "../helpers/functions";
+import Plus from "./svg/Plus";
 
 const Invoices = () => {
   const [invoices, setInvoices] = useState([]);
   const [pano, setPano] = useState(false);
   const [createOpen, setCreateOpen] = useState(false);
+  const [check, setCheck] = useState("");
   useEffect(() => {
     upDataFromLocal(setInvoices);
   }, []);
+  useEffect(() => {
+    if (!check) {
+      upDataFromLocal(setInvoices);
+    } else {
+      const storage = JSON.parse(localStorage.getItem("invoices-app"));
+      setInvoices(storage.filter((invoice) => invoice.status === check));
+    }
+  }, [check]);
   useEffect(() => {});
-  function numberWithCommas(x) {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
-  function setStatusBackground(invoice, opacity = false) {
-    const backOpacity = {
-      background:
-        invoice.status === "paid"
-          ? "var(--green-light)"
-          : invoice.status === "pending"
-          ? "var(--yellow-light)"
-          : "var(--color-draft-light)",
-    };
-    const back = {
-      background:
-        invoice.status === "paid"
-          ? "var(--green)"
-          : invoice.status === "pending"
-          ? "var(--yellow)"
-          : "var(--color-draft)",
-    };
-    return opacity ? back : backOpacity;
-  }
-  function setStatusColor(invoice) {
-    const text = {
-      color:
-        invoice.status === "paid"
-          ? "var(--green)"
-          : invoice.status === "pending"
-          ? "var(--yellow)"
-          : "var(--color-text)",
-    };
-    return text;
+  function checkStatus(e) {
+    return check === e.target.value ? setCheck("") : setCheck(e.target.value);
   }
   return (
     <div className="invoices-container">
@@ -68,7 +54,9 @@ const Invoices = () => {
           </div>
           <div className="filter">
             <div className="filter-status" onClick={() => setPano(!pano)}>
-              <p>Filter by status</p>
+              <p className="filter-title">
+                Filter <span>by status</span>
+              </p>
               <span>
                 <ArrowDown pano={pano} />
               </span>
@@ -81,16 +69,28 @@ const Invoices = () => {
               <label htmlFor="">
                 <input
                   type="checkbox"
-                  onChange={(e) => console.log(e.target)}
+                  onChange={checkStatus}
+                  value="paid"
+                  checked={check === "paid"}
                 />
                 Paid
               </label>
               <label htmlFor="">
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  onChange={checkStatus}
+                  value="pending"
+                  checked={check === "pending"}
+                />
                 Pending
               </label>
               <label htmlFor="">
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  onChange={checkStatus}
+                  value="draft"
+                  checked={check === "draft"}
+                />
                 Draft
               </label>
             </div>
@@ -100,15 +100,23 @@ const Invoices = () => {
               className="btn-new-invoice"
               onClick={() => setCreateOpen(true)}
             >
-              <span>+</span>New Invoice
+              <span>
+                <Plus />
+              </span>
+              New <div className="btn-span">Invoice</div>
             </button>
           </div>
         </div>
 
         <div className="cards">
-          {invoices.map((invoice) => {
+          {invoices.map((invoice, index) => {
             return (
-              <div className="invoice-card" key={invoice.id}>
+              <Link
+                to={`/invoice/${invoice.id}`}
+                className="invoice-card"
+                style={{ animationDelay: `${index * 0.1}s` }}
+                key={invoice.id}
+              >
                 <div className="invoice-id">
                   <p>#{invoice.id}</p>
                 </div>
@@ -136,7 +144,7 @@ const Invoices = () => {
                 <div className="invoice-right-icon">
                   <ArrowRight />
                 </div>
-              </div>
+              </Link>
             );
           })}
         </div>

@@ -12,7 +12,7 @@
   padding: 0;
   margin: 0;
   box-sizing: border-box;
-
+  transition: 0.1s all;
 }
 
 body {
@@ -37,7 +37,10 @@ body {
   --input-border: rgb(136, 142, 176, 0.1);
   --btn-color: rgb(248, 248, 248, 0.8);
   --btn-back-color: rgb(23, 27, 49);
-
+  --btn-edit-background: rgb(37, 41, 69);
+  --btn-edit-color: rgb(223, 227, 250);
+  --amount-background: #0C0E16;
+  --checkbox: #3b416b;
 }
 
 .theme-light {
@@ -51,12 +54,16 @@ body {
   --btn-orange-hover: rgb(255, 151, 151);
   --btn-edit: #F9FAFE;
   --btn-edit-hover: #DFE3FA;
-  --color-text: #0c0e16;
+  --color-text: rgb(136, 142, 176);
   --color-draft: #1E2139;
   --color-draft-light: rgb(30, 33, 57, 0.2);
   --input-border: rgb(136, 142, 176, 0.4);
   --btn-color: rgb(136, 142, 176);
   --btn-back-color: rgba(218, 214, 214, 0.5);
+  --btn-edit-background: rgb(219, 220, 224);
+  --btn-edit-color: rgb(126, 136, 195);
+  --amount-background: #373B53;
+  --checkbox: rgb(240, 230, 230);
 }
 
 @media (min-width: 280px) {
@@ -68,14 +75,37 @@ body {
 
   /* SVGS */
   .svg-logo {
-    background-color: #9277FF;
+    background-color: var(--btn-purple);
+    height: 80px;
+    width: 80px;
+    border-radius: 0 15px 15px 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .svg-logo svg {
+    transform: scale(1.1);
+    z-index: 1;
+  }
+
+  .svg-logo::after {
+    content: "";
+    position: absolute;
+    left: 0px;
+    bottom: 0px;
+    width: 100%;
+    height: 50%;
+    background: var(--btn-purple-hover);
+    border-radius: 20px 0px;
   }
 
   /* NAV */
   nav {
     display: flex;
     width: 100%;
-    height: 30px;
+    height: 80px;
     display: flex;
     justify-content: space-between;
     background-color: #1E2139;
@@ -98,6 +128,7 @@ body {
   .invoices-container {
     width: 100%;
     color: var(--color-text);
+
   }
 
   .invoices-table {
@@ -112,6 +143,8 @@ body {
     color: var(--color-text);
     padding: 10px 0;
     height: 60px;
+    width: 90%;
+    margin: 0 auto;
   }
 
   .invoices-controller-desc {
@@ -127,10 +160,19 @@ body {
   .filter {
     align-self: flex-end;
     margin-left: auto;
-    margin-right: 30px;
+    margin-right: 10px;
     height: 100%;
     cursor: pointer;
     position: relative;
+    transition: 0s all;
+  }
+
+  .filter-title:hover {
+    color: var(--btn-purple-hover);
+  }
+
+  .filter-title span {
+    display: none;
   }
 
   .arrow {
@@ -148,11 +190,13 @@ body {
     position: absolute;
     bottom: -120px;
     left: -40px;
-    width: 160%;
+    width: 210%;
     flex-direction: column;
-    background: var(--card-background);
+    background: var(--checkbox);
     padding: 20px;
     border-radius: 5px;
+    z-index: 2;
+
   }
 
   .filter-checkboxes.active {
@@ -196,23 +240,24 @@ body {
   }
 
   .btn-new-invoice {
-    background: var(--btn-purple);
     border: none;
-    color: white;
-    padding: 15px 20px;
     border-radius: 30px;
-    cursor: pointer;
-  }
-
-  .btn-new-invoice {
     background: var(--btn-purple);
+    color: white;
     height: 50px;
-    width: 140px;
+    width: 90px;
+    padding: 15px 20px;
     display: flex;
     align-items: center;
     font-size: 0.8rem;
     font-weight: 700;
+    cursor: pointer;
     transition: 0.2s all;
+  }
+
+  .btn-span {
+    margin-left: 4px;
+    display: none;
   }
 
   .btn-new-invoice:hover {
@@ -236,6 +281,7 @@ body {
   .cards {
     display: flex;
     flex-direction: column;
+    transform: scale(0.9);
   }
 
   .invoice-card {
@@ -245,12 +291,22 @@ body {
     background: var(--card-background);
     justify-content: space-between;
     margin-top: 20px;
-    padding: 20px 20px;
+    padding: 10px 10px;
     border-radius: 10px;
     font-weight: 300;
+    font-size: 0.8rem;
     cursor: pointer;
     border: 1px solid transparent;
+    text-decoration: none;
+    color: var(--color-text);
+    opacity: 0;
+    animation: fadeIn 1s;
+    animation-delay: 0.1s;
+    animation-fill-mode: forwards;
   }
+
+
+
 
 
   .invoice-card:hover {
@@ -327,6 +383,207 @@ body {
     display: none;
   }
 
+  /* SINGLE ITEM SINGLE INVOICE */
+
+  .single-container {
+    width: 100%;
+    height: 100%;
+  }
+
+  .single-invoice {
+    width: 90%;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    color: var(--color-text);
+    opacity: 0;
+    animation: fadeIn 0.3s;
+    animation-delay: 0.2s;
+    animation-fill-mode: forwards;
+  }
+
+  .go-back {
+    margin: 30px 0 20px 0;
+    display: flex;
+    align-items: center;
+  }
+
+  .arrow-left {
+    margin-right: 15px;
+  }
+
+  .go-back a {
+    text-decoration: none;
+    color: var(--color-text);
+    font-size: 0.9rem;
+    font-weight: 300;
+  }
+
+  .single-status {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 70px;
+    padding: 0 10px;
+    border-radius: 5px;
+    background: var(--card-background);
+    margin: 10px 0;
+  }
+
+  .single-status p {
+    font-size: 0.8rem;
+  }
+
+  .status-button.single {
+    padding: 10px;
+    top: 0;
+    font-size: 0.75rem;
+    width: 90px;
+  }
+
+  .single-buttons-footer {
+    background: var(--card-background);
+    height: 80px;
+    width: 100%;
+    margin-bottom: 0px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 0 10px;
+  }
+
+  .single-buttons-top {
+    display: none;
+  }
+
+  .single-buttons button {
+    border-radius: 30px;
+    border: none;
+    font-size: 0.7rem;
+    padding: 15px 20px;
+    margin-left: 5px;
+    font-weight: 900;
+    cursor: pointer;
+    transition: 0.2s all;
+  }
+
+  .edit-button {
+    color: var(--btn-edit-color);
+    background: var(--btn-edit-background);
+  }
+
+  .edit-button:hover {
+    opacity: 0.8;
+  }
+
+  .delete-button {
+    color: white;
+    background: var(--btn-orange);
+  }
+
+  .delete-button:hover {
+    background: var(--btn-orange-hover);
+  }
+
+
+  .paid-button {
+    color: white;
+    background: var(--btn-purple);
+  }
+
+  .paid-button:hover {
+    background: var(--btn-purple-hover);
+  }
+
+  .single-card {
+    background: var(--card-background);
+    color: var(--color-text);
+    display: flex;
+    flex-wrap: wrap;
+    padding: 15px;
+    margin-bottom: 30px;
+  }
+
+  .single-id-container {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 20px;
+    font-size: 0.8rem;
+    font-weight: 300;
+  }
+
+  .single-id {
+    font-weight: 900;
+    font-size: 0.75rem;
+  }
+
+  .sender-address {
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 0.8rem;
+    font-weight: 300;
+  }
+
+  .date-due-container {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 115px;
+  }
+
+  .date-to {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .date-to:first-of-type {
+    margin-bottom: 20px;
+  }
+
+  .date-to p {
+    font-weight: 300;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+  }
+
+  .client-location {
+    width: 50%;
+    font-size: 0.8rem;
+    margin-bottom: 20px;
+  }
+
+  .client-location p {
+    font-weight: 300;
+    margin-bottom: 2px;
+  }
+
+  .client-location h2 {
+    margin: 5px 0;
+    font-size: 1rem;
+  }
+
+  .recepient-mail {
+    width: 100%;
+    margin-bottom: 20px;
+  }
+
+  .rm-desc {
+    font-weight: 300;
+    font-size: 0.8rem;
+    margin-bottom: 5px;
+  }
+
+  .rm-email {
+    font-weight: 700;
+  }
+
+  .items-sum {
+    display: flex;
+    flex-direction: column;
+  }
+
   /* CREATE FORM */
   .wrapper-create {
     height: 100%;
@@ -358,7 +615,7 @@ body {
   }
 
   .create.active {
-    left: 0%;
+    left: 1%;
   }
 
   .create-title {
@@ -419,6 +676,92 @@ body {
 
   .bill-from-location>* {
     width: 30%;
+  }
+
+  .items-sum {
+    width: 100%;
+    background: var(--btn-edit);
+    border-radius: 5px;
+  }
+
+  .items-infos-all,
+  .items-title-all {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .item-info,
+  .item-title {
+    padding: 15px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .item-title {
+    font-weight: 300;
+    font-size: 0.8rem;
+    display: none;
+  }
+
+  .item-properties {
+    padding: 30px 20px;
+  }
+
+  .item-properties .item-info-quantity,
+  .item-properties .item-info-price {
+    display: none;
+  }
+
+
+  .item-info>* {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+
+  .item-info-name {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .item-info-quantity {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .item-info-total {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: 10px;
+  }
+
+  .item-properties {
+    font-weight: 900;
+    font-size: 0.8rem;
+  }
+
+
+
+  .amount-due {
+    background: var(--amount-background);
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 30px;
+    width: 100%;
+    border-radius: 0 0px 5px 5px;
+  }
+
+  .amount-due p {
+    font-size: 0.7rem;
+    font-weight: 700;
+  }
+
+  .amount-due p:last-of-type {
+    font-size: 1.8rem;
+    font-weight: 900;
   }
 
   /* CREATE BILL TO */
@@ -630,15 +973,48 @@ body {
   }
 }
 
+@media (min-width: 500px) {
+  .btn-new-invoice {
+    width: 140px;
+  }
+
+  .btn-span {
+    display: block;
+  }
+
+  .filter {
+    margin-right: 30px;
+  }
+
+  .filter-title span {
+    display: inline-block;
+  }
+
+  .filter-checkboxes {
+    width: 160%;
+  }
+
+}
+
 @media (min-width: 750px) {
   nav {
     position: fixed;
     flex-direction: column;
     min-height: 100%;
-    width: 50px;
+    width: 100px;
     display: flex;
     justify-content: space-between;
     z-index: 100;
+    border-radius: 0 15px 15px 0;
+  }
+
+  .svg-logo {
+    width: 100px;
+    height: 100px;
+  }
+
+  .svg-logo svg {
+    transform: scale(1.5);
   }
 
   .container--toggle {
@@ -648,6 +1024,11 @@ body {
 
   .invoices-table {
     width: 80%;
+  }
+
+  .invoices-controller {
+    height: 60px;
+    margin-bottom: 20px;
   }
 
   .invoice-card {
@@ -662,8 +1043,13 @@ body {
     font-weight: 300;
     cursor: pointer;
     border: 1px solid transparent;
-    transform: scale(0.9);
+    opacity: 0;
+    animation: fadeIn 1s;
+    animation-delay: 0.1s;
+    animation-fill-mode: forwards;
   }
+
+
 
   .invoice-card>* {
     flex: 1;
@@ -710,6 +1096,7 @@ body {
   .status-button {
     width: 110px;
     position: static;
+    margin-right: 10px;
   }
 
   .invoice-right-icon {
@@ -720,6 +1107,73 @@ body {
     transform: scale(1.2);
   }
 
+  /* SINGLE ITEM SINGLE INVOICE  */
+  .single-invoice {
+    width: 650px;
+    position: relative;
+    left: 50px;
+  }
+
+  .single-status {
+    justify-content: flex-start;
+  }
+
+  .status-button {
+    margin-left: 20px;
+  }
+
+  .single-buttons-top {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .single-buttons-footer {
+    display: none;
+  }
+
+  .single-card {
+    padding: 20px;
+  }
+
+  .single-buttons-top {
+    display: flex;
+  }
+
+  .item-properties .item-info-quantity,
+  .item-properties .item-info-price {
+    display: flex;
+  }
+
+  .item-title {
+    display: flex;
+  }
+
+  .single-id-container {
+    width: 50%;
+  }
+
+  .sender-address {
+    width: 50%;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+  }
+
+  .date-due-container {
+    width: 30%;
+  }
+
+  .client-location {
+    width: 30%;
+  }
+
+  .recepient-mail {
+    width: 35%;
+    padding-left: 15px;
+  }
+
   .create {
     display: flex;
     flex-direction: column;
@@ -727,6 +1181,7 @@ body {
     background: var(--main-background);
     transform: translateX(50px);
     padding: 50px;
+    padding-right: 30px;
     overflow: auto;
   }
 
@@ -790,12 +1245,22 @@ body {
 
 @media (min-width: 1440px) {
   .invoices-table {
-    width: 50%;
+    width: 40%;
   }
 }
 
 @media (min-width: 1920px) {
   .invoices-table {
     width: 40%;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
   }
 }
