@@ -11,7 +11,6 @@ const CreateItem = ({
   itemName,
   itemQuantity,
   itemPrice,
-  itemTotal,
   singleItem,
   setSingleItem,
 }) => {

@@ -97,8 +97,12 @@ const Create = ({
     for (let key of refsArr) {
       refsKeys.push(...Object.keys(key));
     }
+    console.log(refsArr);
     refsArr.flat().forEach((elem) => {
+      console.log("elem TESTING", elem);
       const refKey = Object.keys(elem)[0];
+      console.log(refKey);
+      console.log(elem[refKey].current.type);
       if (elem[refKey].current.value.length === 0) {
         valid = false;
         elem[refKey].current.classList.add("invalid");
