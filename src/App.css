@@ -69,8 +69,6 @@ body {
 
 @media (min-width: 280px) {
 
-
-
   /* SVGS */
   .svg-logo {
     background-color: var(--btn-purple);
@@ -874,6 +872,12 @@ body {
 
   .btn-create-item:hover {
     background: var(--btn-back-color);
+  }
+
+  .error-msg {
+    color: red;
+    font-size: 0.75rem;
+    margin: 10px 0;
   }
 
   /* ITEM LIST CREATE ELEMENT */

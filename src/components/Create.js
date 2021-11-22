@@ -26,6 +26,7 @@ const Create = ({
   const [refsArr, setRefsArr] = useState([]);
   const [terms, setTerms] = useState(1);
   const [calendarOpen, setCalendarOpen] = useState(false);
+  const [itemError, setItemError] = useState(false);
 
   const fromAddress = useRef();
   const fromCity = useRef();
@@ -38,16 +39,6 @@ const Create = ({
   const toPC = useRef();
   const toCountry = useRef();
   const desc = useRef();
-
-  // sledi logika kojom bi se resetovali inputi
-  // ako se to trazi nakon sto se zatvori create modal
-  // buduci da mi nije najjasnije da li se trazi ostavicu ovako
-  // jer ima manje dosadnog copypasteovanje, i mozda nekog sneaky baga kod edita, zaista nisam testirao
-  // useEffect(() => {
-  //   if (createOpen) {
-  //     fromAddress.current.value = singleItem?.senderAddress?.street || "";
-  //   }
-  // }, [createOpen]);
 
   useEffect(() => {
     setRefsArr([
@@ -89,6 +80,13 @@ const Create = ({
         })
       );
     }
+    if (singleItem?.createdAt) {
+      changeDate(new Date(singleItem.createdAt));
+    }
+    if (singleItem?.paymentTerms) {
+      console.log(singleItem.paymentTerms);
+      setTerms(singleItem.paymentTerms);
+    }
   }, [singleItem]);
 
   function checkInputs() {
@@ -100,7 +98,6 @@ const Create = ({
     console.log(refsArr);
     refsArr.flat().forEach((elem) => {
       const refKey = Object.keys(elem);
-      console.log(refKey);
       for (let key of refKey) {
         if (elem[key].current.value.length === 0) {
           valid = false;
@@ -121,7 +118,8 @@ const Create = ({
     }
 
     if (refsArr.length <= 10) {
-      console.log("item must be added");
+      setItemError(true);
+      return;
     }
 
     if (!valid) return;
@@ -147,6 +145,7 @@ const Create = ({
       itemStatus,
       itemId
     );
+    setCreateOpen(false);
   }
   return (
     <div className={createOpen ? "wrapper-create active" : "wrapper-create"}>
@@ -287,10 +286,18 @@ const Create = ({
               id=""
               onChange={(e) => setTerms(e.target.value)}
             >
-              <option value="1">Net 1 Day</option>
-              <option value="7">Net 7 Day</option>
-              <option value="14">Net 14 Day</option>
-              <option value="30">Net 30 Day</option>
+              <option value="1" selected={terms == "1" && "selected"}>
+                Net 1 Day
+              </option>
+              <option value="7" selected={terms == 7 && "selected"}>
+                Net 7 Day
+              </option>
+              <option value="14" selected={terms == "14" && "selected"}>
+                Net 14 Day
+              </option>
+              <option value="30" selected={terms == "30" && "selected"}>
+                Net 30 Day
+              </option>
             </select>
           </div>
           <div className="create-descrption">
@@ -339,6 +346,12 @@ const Create = ({
           >
             + Add New Item
           </button>
+          <p
+            className="error-msg"
+            style={{ display: itemError ? "block" : "none" }}
+          >
+            An Item must be added
+          </p>
         </div>
         <div
           className="buttons-controller"

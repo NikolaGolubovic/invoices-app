@@ -1,11 +1,21 @@
+:root {
+    --green: rgb(51, 214, 159);
+    --green-light: rgb(51, 214, 159, 0.1);
+    --yellow: #FF8F00;
+    --yellow-light: rgba(255, 143, 0, 0.1);
+    --gray: rgb(136, 142, 176);
+    --btn-orange: rgb(236, 87, 87);
+}
+
 @media (min-width: 280px) {
     .react-calendar {
         width: 215px;
         max-width: 100%;
         background: white;
-        border: 1px solid #a0a096;
         font-family: Arial, Helvetica, sans-serif;
         line-height: 1.125em;
+        border-radius: 5px;
+        padding: 0 10px;
     }
 
     .react-calendar--doubleView {
@@ -47,6 +57,7 @@
     .react-calendar__navigation button {
         min-width: 44px;
         background: none;
+        font-size: 1.1rem;
     }
 
     .react-calendar__navigation button:enabled:hover, .react-calendar__navigation button:enabled:focus {
@@ -62,6 +73,7 @@
         text-transform: uppercase;
         font-weight: bold;
         font-size: 0.75em;
+        color: var(--gray);
     }
 
     .react-calendar__month-view__weekdays__weekday {
@@ -121,8 +133,9 @@
     }
 
     .react-calendar__tile--active {
-        background: #006edc;
+        background: var(--green);
         color: white;
+        border-radius: 5px;
     }
 
     .react-calendar__tile--active:enabled:hover, .react-calendar__tile--active:enabled:focus {

@@ -20,7 +20,6 @@ const CreateItem = ({
   const qtyRef = useRef();
   const priceRef = useRef();
   useEffect(() => {
-    console.log("items List", itemsList, "single Item", singleItem);
     setRefsArr([...refsArr, [{ itemNameRef, qtyRef, priceRef }]]);
   }, []);
 
