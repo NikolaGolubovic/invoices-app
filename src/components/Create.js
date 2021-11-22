@@ -90,6 +90,9 @@ const Create = ({
 
   function checkInputs() {
     let valid = true;
+    if (itemsList.length > 0) {
+      setItemError(false);
+    }
     const refsKeys = [];
     for (let key of refsArr) {
       refsKeys.push(...Object.keys(key));
@@ -124,6 +127,8 @@ const Create = ({
     }
 
     if (!valid) return;
+
+    console.log(itemsList.length);
 
     createInvoice(
       setSingleItem,
@@ -287,16 +292,16 @@ const Create = ({
               id=""
               onChange={(e) => setTerms(e.target.value)}
             >
-              <option value="1" selected={terms == "1" && "selected"}>
+              <option value="1" selected={terms === "1" && "selected"}>
                 Net 1 Day
               </option>
-              <option value="7" selected={terms == 7 && "selected"}>
+              <option value="7" selected={terms === 7 && "selected"}>
                 Net 7 Day
               </option>
-              <option value="14" selected={terms == "14" && "selected"}>
+              <option value="14" selected={terms === "14" && "selected"}>
                 Net 14 Day
               </option>
-              <option value="30" selected={terms == "30" && "selected"}>
+              <option value="30" selected={terms === "30" && "selected"}>
                 Net 30 Day
               </option>
             </select>
@@ -370,7 +375,7 @@ const Create = ({
             <button
               style={{ display: edit && "none" }}
               className="btn-draft"
-              onClick={() =>
+              onClick={() => {
                 createInvoice(
                   setSingleItem,
                   date,
@@ -390,8 +395,9 @@ const Create = ({
                   setInvoices,
                   invoices,
                   "draft"
-                )
-              }
+                );
+                setCreateOpen(false);
+              }}
             >
               Save Draft
             </button>
