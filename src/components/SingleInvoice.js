@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
-import Invoices from "./Invoices";
 import SingleButtons from "./SingleButtons";
 import ArrowLeft from "./svg/ArrowLeft";
+import ModalConfirm from "./ModalConfirm";
 
 import { makeDate } from "../helpers/functions";
+import Create from "./Create";
 
 const SingleInvoice = () => {
-  const [invoice, setInvoice] = useState([]);
+  const [invoice, setInvoice] = useState({});
   const params = useParams();
+  const [createOpen, setCreateOpen] = useState(false);
+  const [modalOpen, setModalOpen] = useState(false);
 
   const storage = JSON.parse(localStorage.getItem("invoices-app"));
   const itemsTitles = ["Item Name", "QTY.", "Price", "Total"];
   useEffect(() => {
-    console.log(storage.filter((elem) => elem.id === params.id));
     setInvoice(storage.filter((elem) => elem.id === params.id)[0]);
   }, []);
   function setStatusBackground(invoice, opacity = false) {
@@ -48,6 +50,16 @@ const SingleInvoice = () => {
   }
   return (
     <div style={{ color: "white" }} className="single-container">
+      <aside>
+        <Create
+          createOpen={createOpen}
+          setCreateOpen={setCreateOpen}
+          singleItem={invoice}
+          setSingleItem={setInvoice}
+          itemId={invoice.id}
+          itemStatus={invoice.status}
+        />
+      </aside>
       <div className="single-invoice">
         <div className="go-back">
           <ArrowLeft /> <Link to="/">Go back</Link>
@@ -65,7 +77,14 @@ const SingleInvoice = () => {
             <p style={setStatusColor(invoice)}>{invoice.status}</p>
           </div>
           <div className="single-buttons-top">
-            <SingleButtons />
+            <SingleButtons
+              setCreateOpen={setCreateOpen}
+              status={invoice.status}
+              itemId={invoice.id}
+              invoice={invoice}
+              setInvoice={setInvoice}
+              setModalOpen={setModalOpen}
+            />
           </div>
         </div>
         <div className="single-card">
@@ -146,8 +165,20 @@ const SingleInvoice = () => {
         </div>
       </div>
       <div className="single-buttons-footer">
-        <SingleButtons />
+        <SingleButtons
+          setCreateOpen={setCreateOpen}
+          status={invoice.status}
+          itemId={invoice.id}
+          invoice={invoice}
+          setInvoice={setInvoice}
+          setModalOpen={setModalOpen}
+        />
       </div>
+      <ModalConfirm
+        modalOpen={modalOpen}
+        invoiceId={invoice.id}
+        setModalOpen={setModalOpen}
+      />
     </div>
   );
 };

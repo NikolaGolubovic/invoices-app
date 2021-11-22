@@ -23,13 +23,11 @@ function App() {
   return (
     <>
       <Router>
-        <div className="container">
-          <Nav />
-          <Routes>
-            <Route path="/" element={<Invoices />} />
-            <Route path="invoice/:id" element={<SingleInvoice />} />
-          </Routes>
-        </div>
+        <Nav />
+        <Routes>
+          <Route path="/" element={<Invoices />} />
+          <Route path="invoice/:id" element={<SingleInvoice />} />
+        </Routes>
       </Router>
     </>
   );

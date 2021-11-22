@@ -3,16 +3,30 @@ import Calendar from "react-calendar";
 import CreateItem from "./CreateItem";
 import IconDate from "./svg/IconDate";
 
-import { makeDate } from "../helpers/functions";
+import {
+  makeDate,
+  validateEmail,
+  removeAfterBlur,
+  createInvoice,
+} from "../helpers/functions";
 
-const Create = ({ invoices, setInvoices, createOpen, setCreateOpen }) => {
+const Create = ({
+  invoices,
+  setInvoices,
+  createOpen,
+  setCreateOpen,
+  singleItem,
+  setSingleItem,
+  itemId,
+  itemStatus,
+}) => {
   const [date, changeDate] = useState(new Date());
   const [itemsList, setItemsList] = useState([]);
   const [refsArr, setRefsArr] = useState([]);
   const [terms, setTerms] = useState(1);
   const [calendarOpen, setCalendarOpen] = useState(false);
 
-  const fromAddress = useRef("hello world");
+  const fromAddress = useRef();
   const fromCity = useRef();
   const fromPC = useRef();
   const fromCountry = useRef();
@@ -23,6 +37,16 @@ const Create = ({ invoices, setInvoices, createOpen, setCreateOpen }) => {
   const toPC = useRef();
   const toCountry = useRef();
   const desc = useRef();
+
+  // sledi logika kojom bi se resetovali inputi
+  // ako se to trazi nakon sto se zatvori create modal
+  // buduci da mi nije najjasnije da li se trazi ostavicu ovako
+  // jer ima manje dosadnog copypasteovanje, i mozda nekog sneaky baga kod edita, zaista nisam testirao
+  // useEffect(() => {
+  //   if (createOpen) {
+  //     fromAddress.current.value = singleItem?.senderAddress?.street || "";
+  //   }
+  // }, [createOpen]);
 
   useEffect(() => {
     setRefsArr([
@@ -56,11 +80,15 @@ const Create = ({ invoices, setInvoices, createOpen, setCreateOpen }) => {
     });
   }, []);
 
-  function validateEmail(email) {
-    const re =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
-  }
+  useEffect(() => {
+    if (singleItem?.items?.length > 0) {
+      setItemsList(
+        singleItem.items.map((elem, index) => {
+          return { ...elem, id: index + 1 };
+        })
+      );
+    }
+  }, [singleItem]);
 
   function checkInputs() {
     let valid = true;
@@ -93,85 +121,27 @@ const Create = ({ invoices, setInvoices, createOpen, setCreateOpen }) => {
 
     if (!valid) return;
 
-    // create new element for base
-    function randomIntFromInterval(min, max) {
-      return Math.floor(Math.random() * (max - min + 1) + min);
-    }
-    function twoRandomLetters() {
-      let str = "";
-      for (var i = 0; i < 2; i++) {
-        str += String.fromCharCode(65 + Math.floor(Math.random() * 26));
-      }
-      return str;
-    }
-    let newElement = {
-      id: `${twoRandomLetters()}${randomIntFromInterval(1000, 9999)}`,
-      createdAt: date
-        .toLocaleDateString("en-GB")
-        .split("/")
-        .reverse()
-        .join("-"),
-      paymentDue: new Date(date.setDate(date.getDate() + Number(terms)))
-        .toLocaleDateString("en-GB")
-        .split("/")
-        .reverse()
-        .join("-"),
-      description: desc.current.value,
-      paymentTerms: terms,
-      clientName: toCName.current.value,
-      clientEmail: toCEmail.current.value,
-      status: "pending",
-      senderAddress: {
-        street: fromAddress.current.value,
-        city: fromCity.current.value,
-        postCode: fromPC.current.value,
-        country: fromCountry.current.value,
-      },
-      clientAddress: {
-        street: toAddress.current.value,
-        city: toCity.current.value,
-        postCode: toPC.current.value,
-        country: toCountry.current.value,
-      },
-      items: refsArr.slice(10).map((elemArr) => {
-        const elem = elemArr[0];
-        console.log(elem);
-        return {
-          name: elem.itemNameRef.current.value,
-          quantity: +elem.qtyRef.current.value,
-          price: +elem.priceRef.current.value,
-          total: elem.qtyRef.current.value * elem.priceRef.current.value,
-        };
-      }),
-      total: refsArr
-        .slice(10)
-        .flat()
-        .map((elem) => {
-          return {
-            total: elem.qtyRef.current.value * elem.priceRef.current.value,
-          };
-        })
-        .reduce((prev, next) => prev + next.total, 0),
-    };
-    const storageArr = JSON.parse(localStorage.getItem("invoices-app"));
-    storageArr.unshift(newElement);
-    setInvoices([newElement, ...invoices]);
-    localStorage.setItem("invoices-app", JSON.stringify(storageArr));
-  }
-  function removeAfterBlur(e) {
-    if (e.target.type === "email") {
-      if (validateEmail(e.target.value)) {
-        e.target.classList.remove("invalid");
-      } else {
-        e.target.classList.add("invalid");
-      }
-    } else {
-      if (e.target.value.length > 0) {
-        e.target.classList.remove("invalid");
-      } else {
-        e.target.classList.add("invalid");
-      }
-    }
+    createInvoice(
+      setSingleItem,
+      date,
+      terms,
+      desc,
+      toCName,
+      toCEmail,
+      fromAddress,
+      fromCity,
+      fromPC,
+      fromCountry,
+      toAddress,
+      toCity,
+      toPC,
+      toCountry,
+      refsArr,
+      setInvoices,
+      invoices,
+      itemStatus,
+      itemId
+    );
   }
   return (
     <div className={createOpen ? "wrapper-create active" : "wrapper-create"}>
@@ -183,19 +153,40 @@ const Create = ({ invoices, setInvoices, createOpen, setCreateOpen }) => {
           <p className="bill-from-title">Bill From</p>
           <label className="bill-from-street">
             Street Address
-            <input type="text" ref={fromAddress} onBlur={removeAfterBlur} />
+            <input
+              type="text"
+              ref={fromAddress}
+              onBlur={removeAfterBlur}
+              defaultValue={singleItem?.senderAddress?.street || ""}
+            />
           </label>
           <div className="bill-from-location">
             <label className="bill-from-city">
-              City <input type="text" ref={fromCity} onBlur={removeAfterBlur} />
+              City{" "}
+              <input
+                type="text"
+                ref={fromCity}
+                onBlur={removeAfterBlur}
+                defaultValue={singleItem?.senderAddress?.city || ""}
+              />
             </label>
             <label className="bill-from-post">
               Post Code{" "}
-              <input type="text" ref={fromPC} onBlur={removeAfterBlur} />
+              <input
+                type="text"
+                ref={fromPC}
+                onBlur={removeAfterBlur}
+                defaultValue={singleItem?.senderAddress?.postCode || ""}
+              />
             </label>
             <label className="bill-from-country">
               Country{" "}
-              <input type="text" ref={fromCountry} onBlur={removeAfterBlur} />
+              <input
+                type="text"
+                ref={fromCountry}
+                onBlur={removeAfterBlur}
+                defaultValue={singleItem?.senderAddress?.country || ""}
+              />
             </label>
           </div>
         </div>
@@ -203,27 +194,58 @@ const Create = ({ invoices, setInvoices, createOpen, setCreateOpen }) => {
           <p className="bill-to-title">Bill To</p>
           <label htmlFor="">
             Client's Name
-            <input type="text" ref={toCName} onBlur={removeAfterBlur} />
+            <input
+              type="text"
+              ref={toCName}
+              onBlur={removeAfterBlur}
+              defaultValue={singleItem?.clientName || ""}
+            />
           </label>
           <label htmlFor="">
             Client's Email
-            <input type="email" ref={toCEmail} onBlur={removeAfterBlur} />
+            <input
+              type="email"
+              ref={toCEmail}
+              onBlur={removeAfterBlur}
+              defaultValue={singleItem?.clientEmail || ""}
+            />
           </label>
           <label htmlFor="">
             Street Address{" "}
-            <input type="text" ref={toAddress} onBlur={removeAfterBlur} />
+            <input
+              type="text"
+              ref={toAddress}
+              onBlur={removeAfterBlur}
+              defaultValue={singleItem?.clientAddress?.street || ""}
+            />
           </label>
           <div className="bill-from-location">
             <label htmlFor="">
-              City <input type="text" ref={toCity} onBlur={removeAfterBlur} />
+              City{" "}
+              <input
+                type="text"
+                ref={toCity}
+                onBlur={removeAfterBlur}
+                defaultValue={singleItem?.clientAddress?.city || ""}
+              />
             </label>
             <label htmlFor="">
               Post Code{" "}
-              <input type="text" ref={toPC} onBlur={removeAfterBlur} />
+              <input
+                type="text"
+                ref={toPC}
+                onBlur={removeAfterBlur}
+                defaultValue={singleItem?.clientAddress?.postCode || ""}
+              />
             </label>
             <label htmlFor="">
               Country{" "}
-              <input type="text" ref={toCountry} onBlur={removeAfterBlur} />
+              <input
+                type="text"
+                ref={toCountry}
+                onBlur={removeAfterBlur}
+                defaultValue={singleItem?.clientAddress?.country || ""}
+              />
             </label>
           </div>
           <div className="loner-date">
@@ -274,6 +296,7 @@ const Create = ({ invoices, setInvoices, createOpen, setCreateOpen }) => {
                 placeholder="e.g. Graphic Design Service"
                 ref={desc}
                 onBlur={removeAfterBlur}
+                defaultValue={singleItem?.description || ""}
               />
             </label>
           </div>
@@ -293,6 +316,12 @@ const Create = ({ invoices, setInvoices, createOpen, setCreateOpen }) => {
                   setItemsList={setItemsList}
                   id={item.id}
                   itemIndex={itemIndex}
+                  itemName={item.name}
+                  itemQuantity={item.quantity}
+                  itemPrice={item.price}
+                  itemTotal={item.total}
+                  singleItem={singleItem}
+                  setSingleItem={setSingleItem}
                 />
               );
             })}
@@ -316,7 +345,33 @@ const Create = ({ invoices, setInvoices, createOpen, setCreateOpen }) => {
             </button>
           </div>
           <div className="draft-save-cont">
-            <button className="btn-draft">Save Draft</button>
+            <button
+              className="btn-draft"
+              onClick={() =>
+                createInvoice(
+                  setSingleItem,
+                  date,
+                  terms,
+                  desc,
+                  toCName,
+                  toCEmail,
+                  fromAddress,
+                  fromCity,
+                  fromPC,
+                  fromCountry,
+                  toAddress,
+                  toCity,
+                  toPC,
+                  toCountry,
+                  refsArr,
+                  setInvoices,
+                  invoices,
+                  "draft"
+                )
+              }
+            >
+              Save Draft
+            </button>
             <button className="btn-save" onClick={() => checkInputs()}>
               Save & Send
             </button>

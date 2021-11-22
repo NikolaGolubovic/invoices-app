@@ -29,7 +29,6 @@ const Invoices = () => {
       setInvoices(storage.filter((invoice) => invoice.status === check));
     }
   }, [check]);
-  useEffect(() => {});
   function checkStatus(e) {
     return check === e.target.value ? setCheck("") : setCheck(e.target.value);
   }
