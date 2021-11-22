@@ -45,8 +45,8 @@ body {
 }
 
 .theme-light {
-  --main-background: #F8F8FB;
-  --card-background: white;
+  --main-background: white;
+  --card-background: rgb(250, 246, 246);
   --card-price: #F9FAFE;
   --black-amount: #373B53;
   --btn-purple: rgb(124, 93, 250);
@@ -478,6 +478,7 @@ body {
   .delete-button {
     color: white;
     background: var(--btn-orange);
+    margin-right: 5px;
   }
 
   .delete-button:hover {
@@ -591,12 +592,12 @@ body {
     position: absolute;
     z-index: -1;
     display: block;
-    background: rgb(23, 27, 49, 0.2);
-
+    background: var(--main-background);
   }
 
   .wrapper-create.active {
     z-index: 2;
+    background: rgb(23, 27, 49, 0.2);
   }
 
   .create {

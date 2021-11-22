@@ -58,6 +58,7 @@ const SingleInvoice = () => {
           setSingleItem={setInvoice}
           itemId={invoice.id}
           itemStatus={invoice.status}
+          edit={true}
         />
       </aside>
       <div className="single-invoice">

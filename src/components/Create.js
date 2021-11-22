@@ -19,6 +19,7 @@ const Create = ({
   setSingleItem,
   itemId,
   itemStatus,
+  edit,
 }) => {
   const [date, changeDate] = useState(new Date());
   const [itemsList, setItemsList] = useState([]);
@@ -335,8 +336,11 @@ const Create = ({
             + Add New Item
           </button>
         </div>
-        <div className="buttons-controller">
-          <div className="btn-discard-cont">
+        <div
+          className="buttons-controller"
+          style={{ justifyContent: edit && "flex-end" }}
+        >
+          <div className="btn-discard-cont" style={{ display: edit && "none" }}>
             <button
               className="btn-discard"
               onClick={() => setCreateOpen(false)}
@@ -346,6 +350,7 @@ const Create = ({
           </div>
           <div className="draft-save-cont">
             <button
+              style={{ display: edit && "none" }}
               className="btn-draft"
               onClick={() =>
                 createInvoice(
@@ -371,6 +376,13 @@ const Create = ({
               }
             >
               Save Draft
+            </button>
+            <button
+              className="delete-button"
+              style={{ display: !edit && "none" }}
+              onClick={() => setCreateOpen(false)}
+            >
+              Cancel
             </button>
             <button className="btn-save" onClick={() => checkInputs()}>
               Save & Send
