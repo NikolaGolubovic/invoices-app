@@ -84,7 +84,6 @@ const Create = ({
       changeDate(new Date(singleItem.createdAt));
     }
     if (singleItem?.paymentTerms) {
-      console.log(singleItem.paymentTerms);
       setTerms(singleItem.paymentTerms);
     }
   }, [singleItem]);
@@ -95,11 +94,13 @@ const Create = ({
     for (let key of refsArr) {
       refsKeys.push(...Object.keys(key));
     }
-    console.log(refsArr);
     refsArr.flat().forEach((elem) => {
       const refKey = Object.keys(elem);
       for (let key of refKey) {
-        if (elem[key].current.value.length === 0) {
+        if (
+          elem[key].current.value.length === 0 ||
+          elem[key].current.value === 0
+        ) {
           valid = false;
           elem[key].current.classList.add("invalid");
         } else {
@@ -142,7 +143,7 @@ const Create = ({
       refsArr,
       setInvoices,
       invoices,
-      itemStatus,
+      "pending",
       itemId
     );
     setCreateOpen(false);

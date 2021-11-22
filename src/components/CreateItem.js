@@ -4,8 +4,6 @@ const CreateItem = ({
   setRefsArr,
   refsArr,
   removeAfterBlur,
-  itemsList,
-  setItemsList,
   id,
   itemIndex,
   itemName,
@@ -13,9 +11,12 @@ const CreateItem = ({
   itemPrice,
   singleItem,
   setSingleItem,
+  setItemsList,
+  itemsList,
 }) => {
   const [qty, setQtx] = useState();
   const [price, setPrice] = useState();
+
   const itemNameRef = useRef();
   const qtyRef = useRef();
   const priceRef = useRef();
@@ -25,17 +26,21 @@ const CreateItem = ({
 
   function removeItem() {
     const storage = JSON.parse(localStorage.getItem("invoices-app"));
-    var filteredObj = {
-      ...singleItem,
-      items: singleItem.items.filter((elem, index) => index !== itemIndex),
-    };
-    let filteredStorage = storage.map((elem) =>
-      elem.id === singleItem.id ? filteredObj : elem
-    );
+    let filteredObj;
+    let filteredStorage;
+    if (singleItem) {
+      filteredObj = {
+        ...singleItem,
+        items: singleItem.items.filter((elem, index) => index !== itemIndex),
+      };
+      filteredStorage = storage.map((elem) =>
+        elem.id === singleItem.id ? filteredObj : elem
+      );
+      setSingleItem(filteredObj);
+      localStorage.setItem("invoices-app", JSON.stringify(filteredStorage));
+    }
     setItemsList(itemsList.filter((item) => item.id !== id));
     setRefsArr(refsArr.filter((elem, index) => index !== itemIndex + 10));
-    setSingleItem(filteredObj);
-    localStorage.setItem("invoices-app", JSON.stringify(filteredStorage));
   }
 
   return (
