@@ -121,7 +121,7 @@ export function createInvoice(
     },
     items: refsArr.slice(10).map((elemArr) => {
       const elem = elemArr[0];
-      console.log(elem);
+      console.log(refsArr);
       return {
         name: elem.itemNameRef.current.value,
         quantity: +elem.qtyRef.current.value,

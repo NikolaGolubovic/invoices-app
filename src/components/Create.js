@@ -73,7 +73,15 @@ const Create = ({
   }, []);
 
   useEffect(() => {
+    const storage = JSON.parse(localStorage.getItem("invoices-app"));
+    // console.log( storage.filter((elem) => singleItem.id === elem.id)[0].items);
     if (singleItem?.items?.length > 0) {
+      console.log(
+        "update items list",
+        singleItem.items.map((elem, index) => {
+          return { ...elem, id: index + 1 };
+        })
+      );
       setItemsList(
         singleItem.items.map((elem, index) => {
           return { ...elem, id: index + 1 };
@@ -98,16 +106,28 @@ const Create = ({
       refsKeys.push(...Object.keys(key));
     }
     refsArr.flat().forEach((elem) => {
-      const refKey = Object.keys(elem);
+      const refKey = Object.keys(elem); // ["toCity"], ["desc"], ["itemNameRef", "qtyRef", "priceRef"], ["itemNameRef", "qtyRef", "priceRef"]
+      console.log("refsArr REFSARR", refsArr);
       for (let key of refKey) {
+        console.log("TEST", key, refKey, elem);
+        console.log("elem[key]", elem[key]);
+        console.log("elem[key].current", elem[key].current);
+        console.log("elem[key].current.value", elem[key].current.value);
+        // key je toCity, desc, qtyRef, priceRef
+        // refKey je ["toCity"], ["desc"], ["itemNameRef", "qtyRef", "priceRef"], ["itemNameRef", "qtyRef", "priceRef"]
+        // elem je {toCity: {...}}, {desc: {...}}, {itemNameRef: {...}, qtyRef: {...}, priceRef: {...}}, {itemNameRef: {...}, qtyRef: {...}, priceRef: {...}},
+
         if (
           elem[key].current.value.length === 0 ||
           elem[key].current.value === 0
         ) {
+          console.log(elem[key].current);
           valid = false;
           elem[key].current.classList.add("invalid");
         } else {
-          elem[key].current.classList.remove("invalid");
+          if (elem[key].current.classList.contains("invalid")) {
+            elem[key].current.classList.remove("invalid");
+          }
         }
       }
     });
@@ -127,8 +147,6 @@ const Create = ({
     }
 
     if (!valid) return;
-
-    console.log(itemsList.length);
 
     createInvoice(
       setSingleItem,
@@ -346,6 +364,7 @@ const Create = ({
           </ul>
           <button
             onClick={() => {
+              console.log("from button", { id: itemsList.length + 1 });
               setItemsList([...itemsList, { id: itemsList.length + 1 }]);
             }}
             className="btn-create-item"
