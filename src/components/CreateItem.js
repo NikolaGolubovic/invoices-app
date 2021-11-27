@@ -21,7 +21,7 @@ const CreateItem = ({
   const qtyRef = useRef();
   const priceRef = useRef();
   useEffect(() => {
-    setRefsArr([...refsArr, [{ itemNameRef, qtyRef, priceRef }]]);
+    setRefsArr((prevArr) => [...prevArr, [{ itemNameRef, qtyRef, priceRef }]]);
   }, []);
 
   function removeItem(itemTotal) {
@@ -37,12 +37,15 @@ const CreateItem = ({
       filteredStorage = storage.map((elem) =>
         elem.id === singleItem.id ? filteredObj : elem
       );
-      console.log(filteredObj);
       setSingleItem(filteredObj);
       localStorage.setItem("invoices-app", JSON.stringify(filteredStorage));
     }
     setItemsList(itemsList.filter((item) => item.id !== id));
-    setRefsArr(refsArr.filter((elem, index) => index !== itemIndex + 10));
+    setRefsArr((prevArr) =>
+      prevArr.filter((elem, index) => {
+        return index !== itemIndex + 10;
+      })
+    );
   }
 
   const itemTotal = qty * price || itemQuantity * itemPrice || 0;
